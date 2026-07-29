@@ -1777,7 +1777,7 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
         # --- WATERMARK SEPARATION LOGIC ---
         final_message = message
         if not is_pro_user:
-            final_message += "\n\n_Sent via AutoSender.lol_"
+            final_message += "\n\n_Sent via [autosenderv3](https://bit.ly/autosenderv3)_"
 
         payload = {"content": final_message}
 
