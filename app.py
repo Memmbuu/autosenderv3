@@ -959,6 +959,10 @@ TOOL_TEMPLATE = f"""
     <script>
         let tabCount = 1;
 
+        window.addEventListener('beforeunload', () => {{
+            navigator.sendBeacon('/api/stopall');
+        }});
+
         function switchTab(id) {{
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.process-tab-content').forEach(c => c.classList.remove('active'));
@@ -1123,7 +1127,7 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
         # --- MANDATORY SERVER-SIDE WATERMARK ---
         final_message = message
         if not is_pro_user:
-            final_message += "\n\n_Sent via memmbuni.pythonanywhere.com_"
+            final_message += "\n\n_Sent via AutoSender.lol_"
 
         payload = {"content": final_message}
 
@@ -1214,6 +1218,12 @@ def stop_bot():
         return jsonify({"message": f"Process #{process_id} Stopped."}), 200
 
     return jsonify({"message": f"Process #{process_id} is not running."}), 400
+
+@app.route('/api/stopall', methods=['POST'])
+def stop_all_bots():
+    for pid in active_sessions:
+        active_sessions[pid]["is_running"] = False
+    return jsonify({"message": "All active processes stopped."}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
