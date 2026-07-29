@@ -641,7 +641,7 @@ HOME_TEMPLATE = f"""
                 </div>
                 <div class="discord-text">
                     <h3>Join Our Discord Community</h3>
-                    <p>Get instant support, request free key giveaways, and chat with members.</p>
+                    <p>To buy, join our Discord for a safe and secure subscription transfer! and support</p>
                 </div>
             </div>
             <a href="https://discord.gg/X8KuxXM5r" target="_blank" class="btn-discord">
@@ -870,7 +870,7 @@ FREE_TOOL_TEMPLATE = f"""
         .btn-group {{
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 15px;
         }}
 
         button.action-btn {{
@@ -898,6 +898,19 @@ FREE_TOOL_TEMPLATE = f"""
         }}
 
         .btn-stop:hover {{ background-color: #3f4248; }}
+
+        .btn-save {{
+            background-color: #23a55a;
+            color: #ffffff;
+        }}
+        .btn-save:hover {{ background-color: #1f904e; }}
+
+        .btn-clear {{
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }}
+        .btn-clear:hover {{ color: var(--error-color); border-color: var(--error-color); }}
 
         .status-container {{
             margin-top: 16px;
@@ -977,6 +990,11 @@ FREE_TOOL_TEMPLATE = f"""
                 </div>
 
                 <div class="btn-group">
+                    <button class="action-btn btn-save" onclick="saveProcessConfig()">💾 Save Config</button>
+                    <button class="action-btn btn-clear" onclick="clearProcessConfig()">🗑️ Clear Config</button>
+                </div>
+
+                <div class="btn-group">
                     <button class="action-btn btn-start" onclick="startProcess(1)">Start Process</button>
                     <button class="action-btn btn-stop" onclick="stopProcess(1)">Stop Process</button>
                 </div>
@@ -990,9 +1008,61 @@ FREE_TOOL_TEMPLATE = f"""
     </div>
 
     <script>
+        window.addEventListener('load', () => {{
+            loadProcessConfig();
+        }});
+
         window.addEventListener('beforeunload', () => {{
             navigator.sendBeacon('/api/stopall');
         }});
+
+        function saveProcessConfig() {{
+            const content = document.getElementById('process-content-1');
+            const config = {{
+                token: content.querySelector('.input-token').value,
+                channelId: content.querySelector('.input-channel').value,
+                message: content.querySelector('.input-message').value,
+                intervalVal: content.querySelector('.input-interval-val').value,
+                intervalUnit: content.querySelector('.input-interval-unit').value
+            }};
+
+            localStorage.setItem('autosender_free_config', JSON.stringify(config));
+            const statusText = document.querySelector('#status-1 .status-text');
+            statusText.innerText = 'Configuration saved to browser local storage!';
+        }}
+
+        function loadProcessConfig() {{
+            const savedData = localStorage.getItem('autosender_free_config');
+            if (savedData) {{
+                try {{
+                    const config = JSON.parse(savedData);
+                    const content = document.getElementById('process-content-1');
+                    if (config.token) content.querySelector('.input-token').value = config.token;
+                    if (config.channelId) content.querySelector('.input-channel').value = config.channelId;
+                    if (config.message) content.querySelector('.input-message').value = config.message;
+                    if (config.intervalVal) content.querySelector('.input-interval-val').value = config.intervalVal;
+                    if (config.intervalUnit) content.querySelector('.input-interval-unit').value = config.intervalUnit;
+
+                    const statusText = document.querySelector('#status-1 .status-text');
+                    statusText.innerText = 'Loaded saved configuration from browser storage!';
+                }} catch (e) {{
+                    console.error('Failed to parse saved config:', e);
+                }}
+            }}
+        }}
+
+        function clearProcessConfig() {{
+            localStorage.removeItem('autosender_free_config');
+            const content = document.getElementById('process-content-1');
+            content.querySelector('.input-token').value = '';
+            content.querySelector('.input-channel').value = '';
+            content.querySelector('.input-message').value = '';
+            content.querySelector('.input-interval-val').value = '1';
+            content.querySelector('.input-interval-unit').value = '60';
+
+            const statusText = document.querySelector('#status-1 .status-text');
+            statusText.innerText = 'Saved config cleared!';
+        }}
 
         async function startProcess(id) {{
             const content = document.getElementById(`process-content-${{id}}`);
@@ -1299,7 +1369,7 @@ PRO_TOOL_TEMPLATE = f"""
             box-shadow: 0 0 0 2px rgba(218, 55, 61, 0.25);
         }}
 
-        .btn-group {{ display: flex; gap: 10px; margin-top: 25px; }}
+        .btn-group {{ display: flex; gap: 10px; margin-top: 15px; }}
 
         button.action-btn {{
             flex: 1;
@@ -1321,6 +1391,12 @@ PRO_TOOL_TEMPLATE = f"""
             border: 1px solid rgba(255, 255, 255, 0.1);
         }}
         .btn-stop:hover {{ background-color: #3f4248; }}
+
+        .btn-save {{ background-color: #23a55a; color: #ffffff; }}
+        .btn-save:hover {{ background-color: #1f904e; }}
+
+        .btn-clear {{ background-color: transparent; color: var(--text-muted); border: 1px dashed rgba(255, 255, 255, 0.2); }}
+        .btn-clear:hover {{ color: var(--error-color); border-color: var(--error-color); }}
 
         .status-container {{
             margin-top: 20px;
@@ -1405,6 +1481,11 @@ PRO_TOOL_TEMPLATE = f"""
                     </div>
 
                     <div class="btn-group">
+                        <button class="action-btn btn-save" onclick="saveAllProConfigs()">💾 Save All Tabs</button>
+                        <button class="action-btn btn-clear" onclick="clearProConfigs()">🗑️ Clear Storage</button>
+                    </div>
+
+                    <div class="btn-group">
                         <button class="action-btn btn-start" onclick="startProcess(1)">Start Pro Process</button>
                         <button class="action-btn btn-stop" onclick="stopProcess(1)">Stop Process</button>
                     </div>
@@ -1421,9 +1502,80 @@ PRO_TOOL_TEMPLATE = f"""
     <script>
         let tabCount = 1;
 
+        window.addEventListener('load', () => {{
+            loadProConfigs();
+        }});
+
         window.addEventListener('beforeunload', () => {{
             navigator.sendBeacon('/api/stopall');
         }});
+
+        function saveAllProConfigs() {{
+            const configs = [];
+            const activeContents = document.querySelectorAll('.process-tab-content');
+
+            activeContents.forEach((c) => {{
+                configs.push({{
+                    key: c.querySelector('.input-key').value,
+                    token: c.querySelector('.input-token').value,
+                    channelId: c.querySelector('.input-channel').value,
+                    message: c.querySelector('.input-message').value,
+                    intervalVal: c.querySelector('.input-interval-val').value,
+                    intervalUnit: c.querySelector('.input-interval-unit').value
+                }});
+            }});
+
+            localStorage.setItem('autosender_pro_config', JSON.stringify(configs));
+            
+            activeContents.forEach((c, idx) => {{
+                const statusText = c.querySelector('.status-text');
+                if (statusText) statusText.innerText = 'All Pro tab configurations saved!';
+            }});
+        }}
+
+        function loadProConfigs() {{
+            const savedData = localStorage.getItem('autosender_pro_config');
+            if (savedData) {{
+                try {{
+                    const configs = JSON.parse(savedData);
+                    if (Array.isArray(configs) && configs.length > 0) {{
+                        // Fill tab 1
+                        fillTabFields(1, configs[0]);
+                        
+                        // Dynamically re-create extra tabs if saved
+                        for (let i = 1; i < configs.length; i++) {{
+                            addNewProcessTab();
+                            fillTabFields(tabCount, configs[i]);
+                        }}
+
+                        const activeContents = document.querySelectorAll('.process-tab-content');
+                        activeContents.forEach((c) => {{
+                            const statusText = c.querySelector('.status-text');
+                            if (statusText) statusText.innerText = 'Saved Pro session restored!';
+                        }});
+                    }}
+                }} catch (e) {{
+                    console.error('Failed to load Pro config:', e);
+                }}
+            }}
+        }}
+
+        function fillTabFields(id, config) {{
+            const content = document.getElementById(`process-content-${{id}}`);
+            if (!content || !config) return;
+
+            if (config.key) content.querySelector('.input-key').value = config.key;
+            if (config.token) content.querySelector('.input-token').value = config.token;
+            if (config.channelId) content.querySelector('.input-channel').value = config.channelId;
+            if (config.message) content.querySelector('.input-message').value = config.message;
+            if (config.intervalVal) content.querySelector('.input-interval-val').value = config.intervalVal;
+            if (config.intervalUnit) content.querySelector('.input-interval-unit').value = config.intervalUnit;
+        }}
+
+        function clearProConfigs() {{
+            localStorage.removeItem('autosender_pro_config');
+            location.reload();
+        }}
 
         function switchTab(id) {{
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1458,7 +1610,6 @@ PRO_TOOL_TEMPLATE = f"""
             newContent.className = 'process-tab-content';
             newContent.id = `process-content-${{tabId}}`;
             
-            // For new tabs in pro mode, we grab the key from Tab 1 if possible
             let mainKey = document.querySelector('#process-content-1 .input-key') ? document.querySelector('#process-content-1 .input-key').value : '';
 
             newContent.innerHTML = `
@@ -1492,6 +1643,10 @@ PRO_TOOL_TEMPLATE = f"""
                     ✨ Pro Mode: Watermarks completely disabled & Unlimited messages active!
                 </div>
                 <div class="btn-group">
+                    <button class="action-btn btn-save" onclick="saveAllProConfigs()">💾 Save All Tabs</button>
+                    <button class="action-btn btn-clear" onclick="clearProConfigs()">🗑️ Clear Storage</button>
+                </div>
+                <div class="btn-group">
                     <button class="action-btn btn-start" onclick="startProcess(${{tabId}})">Start Pro Process</button>
                     <button class="action-btn btn-stop" onclick="stopProcess(${{tabId}})">Stop Process</button>
                 </div>
@@ -1508,16 +1663,13 @@ PRO_TOOL_TEMPLATE = f"""
         async function closeTab(event, id) {{
             event.stopPropagation();
             
-            // Immediately attempt to stop the backend process
             await stopProcess(id);
             
-            // Remove DOM Elements
             const tabBtn = document.getElementById(`tab-btn-${{id}}`);
             const tabContent = document.getElementById(`process-content-${{id}}`);
             if(tabBtn) tabBtn.remove();
             if(tabContent) tabContent.remove();
             
-            // Fallback to viewing tab 1 
             switchTab(1);
         }}
 
@@ -1568,7 +1720,7 @@ PRO_TOOL_TEMPLATE = f"""
 
         async function stopProcess(id) {{
             const statusBox = document.getElementById(`status-${{id}}`);
-            if(!statusBox) return; // Ignore if called during tab deletion and already gone
+            if(!statusBox) return;
             const statusText = statusBox.querySelector('.status-text');
 
             try {{
@@ -1625,7 +1777,7 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
         # --- WATERMARK SEPARATION LOGIC ---
         final_message = message
         if not is_pro_user:
-            final_message += "\n\n_Sent via [autosenderv3](https://bit.ly/autosenderv3)l_"
+            final_message += "\n\n_Sent via AutoSender.lol_"
 
         payload = {"content": final_message}
 
@@ -1641,7 +1793,6 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
                 else:
                     print(f"[PROC #{process_id} PRO SUCCESS] Clean message dispatched without watermark!")
             elif res.status_code == 429:
-                # Add handling for 429 rate limit
                 try:
                     error_data = res.json()
                     retry_after = error_data.get('retry_after', 1)
@@ -1698,7 +1849,6 @@ def start_bot():
     is_pro = verify_key(user_key) if user_key else False
     
     # ENFORCE FREE SINGLE-PROCESS RULE:
-    # If the user tries running process #2 or above without a valid Pro Key, reject request
     if not is_pro and process_id != '1':
         return jsonify({
             "message": "Free Tier is restricted to Process #1 only. Upgrade to Pro for multi-process automation."
