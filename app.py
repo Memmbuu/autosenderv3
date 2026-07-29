@@ -16,7 +16,7 @@ DATA_FILE = "free_users.json"
 FREE_LIMIT = 300
 
 # Thread lock for safe JSON file writes across concurrent threads
-db_lock = threading.Lock()
+db_lock = threading.RLock()
 
 # --- DATABASE / PERSISTENCE HELPERS ---
 def get_token_hash(token):
@@ -51,8 +51,12 @@ def verify_key(key):
     try:
         res = requests.get(RAW_KEYS_URL, timeout=5)
         if res.status_code == 200:
-            valid_keys = [k.strip() for k in res.text.splitlines() if k.strip()]
-            return key.strip() in valid_keys
+            data = res.json()
+            keys_dict = data.get("KEYS", {})
+            user_key = keys_dict.get(key.strip())
+            # Verify the key exists and active state is strictly true
+            if user_key and user_key.get("active") is True:
+                return True
     except Exception as e:
         print(f"[KEY VERIFY ERROR] {e}")
     return False
@@ -91,8 +95,8 @@ HOME_TEMPLATE = f"""
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }}
 
-        ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
-        ::-webkit-scrollbar-track {{ background: #0b0c0e; }}
+        ::-webkit-scrollbar {{ width: 8px; height: 8px; }}
+        ::-webkit-scrollbar-track {{ background: var(--bg-primary); border-radius: 4px; }}
         ::-webkit-scrollbar-thumb {{ background: #1f2023; border-radius: 4px; }}
         ::-webkit-scrollbar-thumb:hover {{ background: var(--accent-red); }}
 
@@ -731,9 +735,6 @@ FREE_TOOL_TEMPLATE = f"""
             --bg-primary: #1e1f22;
             --bg-secondary: #2b2d31;
             --bg-tertiary: #313338;
-            --scrollbar-auto: #1a1b1e;
-            --scrollbar-thumb: #111214;
-            --scrollbar-thumb-hover: #2b2d31;
             --accent-red: #da373d;
             --accent-red-hover: #a12828;
             --text-normal: #f2f3f5;
@@ -750,10 +751,10 @@ FREE_TOOL_TEMPLATE = f"""
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }}
 
-        ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
-        ::-webkit-scrollbar-track {{ background: var(--scrollbar-auto); border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb {{ background: var(--scrollbar-thumb); border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb:hover {{ background: var(--scrollbar-thumb-hover); }}
+        ::-webkit-scrollbar {{ width: 8px; height: 8px; }}
+        ::-webkit-scrollbar-track {{ background: var(--bg-primary); border-radius: 4px; }}
+        ::-webkit-scrollbar-thumb {{ background: #111214; border-radius: 4px; }}
+        ::-webkit-scrollbar-thumb:hover {{ background: var(--accent-red); }}
 
         body {{
             background-color: var(--bg-primary);
@@ -837,7 +838,8 @@ FREE_TOOL_TEMPLATE = f"""
         }}
 
         input[type="text"],
-        input[type="number"] {{
+        input[type="number"],
+        select.input-interval-unit {{
             width: 100%;
             padding: 10px 12px;
             background-color: var(--input-bg);
@@ -850,7 +852,8 @@ FREE_TOOL_TEMPLATE = f"""
         }}
 
         input[type="text"]:focus,
-        input[type="number"]:focus {{
+        input[type="number"]:focus,
+        select.input-interval-unit:focus {{
             border-color: var(--accent-red);
             box-shadow: 0 0 0 2px rgba(218, 55, 61, 0.25);
         }}
@@ -954,8 +957,14 @@ FREE_TOOL_TEMPLATE = f"""
                     <input type="text" class="input-message" placeholder="Hello world! Check out my shop.">
                 </div>
                 <div class="form-group">
-                    <label>Interval (Seconds)</label>
-                    <input type="number" class="input-interval" value="60" min="5">
+                    <label>Interval <span style="font-weight: 400; color: #5c6068;">(Min. 10 Sec)</span></label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" class="input-interval-val" value="1" min="1" style="flex: 1;">
+                        <select class="input-interval-unit" style="flex: 1;">
+                            <option value="1">Seconds</option>
+                            <option value="60" selected>Minutes</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="btn-group">
@@ -981,7 +990,11 @@ FREE_TOOL_TEMPLATE = f"""
             const token = content.querySelector('.input-token').value;
             const channelId = content.querySelector('.input-channel').value;
             const message = content.querySelector('.input-message').value;
-            const interval = content.querySelector('.input-interval').value;
+            
+            const intervalVal = parseInt(content.querySelector('.input-interval-val').value) || 1;
+            const intervalUnit = parseInt(content.querySelector('.input-interval-unit').value) || 60;
+            let totalSeconds = intervalVal * intervalUnit;
+            if (totalSeconds < 10) totalSeconds = 10;
 
             const statusBox = document.getElementById(`status-${{id}}`);
             const statusText = statusBox.querySelector('.status-text');
@@ -996,7 +1009,7 @@ FREE_TOOL_TEMPLATE = f"""
                         token: token,
                         channel_id: channelId,
                         message: message,
-                        interval: interval
+                        interval: totalSeconds
                     }})
                 }});
 
@@ -1056,9 +1069,6 @@ PRO_TOOL_TEMPLATE = f"""
             --bg-primary: #111214;
             --bg-secondary: #1a1b1e;
             --bg-tertiary: #232428;
-            --scrollbar-auto: #1a1b1e;
-            --scrollbar-thumb: #111214;
-            --scrollbar-thumb-hover: #2b2d31;
             --accent-red: #da373d;
             --accent-red-hover: #e54c52;
             --text-normal: #f2f3f5;
@@ -1074,6 +1084,11 @@ PRO_TOOL_TEMPLATE = f"""
             padding: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }}
+
+        ::-webkit-scrollbar {{ width: 8px; height: 8px; }}
+        ::-webkit-scrollbar-track {{ background: var(--bg-primary); border-radius: 4px; }}
+        ::-webkit-scrollbar-thumb {{ background: #232428; border-radius: 4px; }}
+        ::-webkit-scrollbar-thumb:hover {{ background: var(--accent-red); }}
 
         body {{
             background-color: var(--bg-primary);
@@ -1205,6 +1220,18 @@ PRO_TOOL_TEMPLATE = f"""
             background-color: var(--success-color);
             box-shadow: 0 0 6px var(--success-color);
         }}
+        
+        .close-tab {{
+            margin-left: 6px;
+            color: var(--text-muted);
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }}
+        .close-tab:hover {{ color: var(--error-color); }}
+        .tab-btn.active .close-tab {{ color: rgba(255,255,255,0.6); }}
+        .tab-btn.active .close-tab:hover {{ color: #fff; }}
 
         .add-tab-btn {{
             background-color: rgba(255, 255, 255, 0.05);
@@ -1234,7 +1261,8 @@ PRO_TOOL_TEMPLATE = f"""
         }}
 
         input[type="text"],
-        input[type="number"] {{
+        input[type="number"],
+        select.input-interval-unit {{
             width: 100%;
             padding: 12px 14px;
             background-color: var(--input-bg);
@@ -1247,7 +1275,8 @@ PRO_TOOL_TEMPLATE = f"""
         }}
 
         input[type="text"]:focus,
-        input[type="number"]:focus {{
+        input[type="number"]:focus,
+        select.input-interval-unit:focus {{
             border-color: var(--accent-red);
             box-shadow: 0 0 0 2px rgba(218, 55, 61, 0.25);
         }}
@@ -1343,8 +1372,14 @@ PRO_TOOL_TEMPLATE = f"""
                         <input type="text" class="input-message" placeholder="Clean message without ads/watermarks">
                     </div>
                     <div class="form-group">
-                        <label>Interval (Seconds)</label>
-                        <input type="number" class="input-interval" value="60" min="5">
+                        <label>Interval <span style="font-weight: 400; color: #5c6068;">(Min. 10 Sec)</span></label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" class="input-interval-val" value="1" min="1" style="flex: 1;">
+                            <select class="input-interval-unit" style="flex: 1;">
+                                <option value="1">Seconds</option>
+                                <option value="60" selected>Minutes</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="pro-banner">
@@ -1396,7 +1431,7 @@ PRO_TOOL_TEMPLATE = f"""
             newTabBtn.className = 'tab-btn';
             newTabBtn.id = `tab-btn-${{tabId}}`;
             newTabBtn.onclick = () => switchTab(tabId);
-            newTabBtn.innerHTML = `<span class="status-dot"></span> Process #${{tabId}}`;
+            newTabBtn.innerHTML = `<span class="status-dot"></span> Process #${{tabId}} <span class="close-tab" onclick="closeTab(event, ${{tabId}})">×</span>`;
 
             tabsBar.insertBefore(newTabBtn, addBtn);
 
@@ -1426,8 +1461,14 @@ PRO_TOOL_TEMPLATE = f"""
                     <input type="text" class="input-message" placeholder="Clean message without ads/watermarks">
                 </div>
                 <div class="form-group">
-                    <label>Interval (Seconds)</label>
-                    <input type="number" class="input-interval" value="60" min="5">
+                    <label>Interval <span style="font-weight: 400; color: #5c6068;">(Min. 10 Sec)</span></label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" class="input-interval-val" value="1" min="1" style="flex: 1;">
+                        <select class="input-interval-unit" style="flex: 1;">
+                            <option value="1">Seconds</option>
+                            <option value="60" selected>Minutes</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="pro-banner">
                     ✨ Pro Mode: Watermarks completely disabled & Unlimited messages active!
@@ -1446,13 +1487,33 @@ PRO_TOOL_TEMPLATE = f"""
             switchTab(tabId);
         }}
 
+        async function closeTab(event, id) {{
+            event.stopPropagation();
+            
+            // Immediately attempt to stop the backend process
+            await stopProcess(id);
+            
+            // Remove DOM Elements
+            const tabBtn = document.getElementById(`tab-btn-${{id}}`);
+            const tabContent = document.getElementById(`process-content-${{id}}`);
+            if(tabBtn) tabBtn.remove();
+            if(tabContent) tabContent.remove();
+            
+            // Fallback to viewing tab 1 
+            switchTab(1);
+        }}
+
         async function startProcess(id) {{
             const content = document.getElementById(`process-content-${{id}}`);
             const key = content.querySelector('.input-key').value;
             const token = content.querySelector('.input-token').value;
             const channelId = content.querySelector('.input-channel').value;
             const message = content.querySelector('.input-message').value;
-            const interval = content.querySelector('.input-interval').value;
+            
+            const intervalVal = parseInt(content.querySelector('.input-interval-val').value) || 1;
+            const intervalUnit = parseInt(content.querySelector('.input-interval-unit').value) || 60;
+            let totalSeconds = intervalVal * intervalUnit;
+            if (totalSeconds < 10) totalSeconds = 10;
 
             const statusBox = document.getElementById(`status-${{id}}`);
             const statusText = statusBox.querySelector('.status-text');
@@ -1467,7 +1528,7 @@ PRO_TOOL_TEMPLATE = f"""
                         token: token,
                         channel_id: channelId,
                         message: message,
-                        interval: interval
+                        interval: totalSeconds
                     }})
                 }});
 
@@ -1489,6 +1550,7 @@ PRO_TOOL_TEMPLATE = f"""
 
         async function stopProcess(id) {{
             const statusBox = document.getElementById(`status-${{id}}`);
+            if(!statusBox) return; // Ignore if called during tab deletion and already gone
             const statusText = statusBox.querySelector('.status-text');
 
             try {{
@@ -1501,7 +1563,8 @@ PRO_TOOL_TEMPLATE = f"""
                 const data = await res.json();
                 statusBox.className = 'status-container';
                 statusText.innerText = data.message;
-                document.getElementById(`tab-btn-${{id}}`).classList.remove('running');
+                const tabBtn = document.getElementById(`tab-btn-${{id}}`);
+                if(tabBtn) tabBtn.classList.remove('running');
             }} catch (err) {{
                 statusBox.className = 'status-container error';
                 statusText.innerText = 'Failed to stop process.';
@@ -1559,6 +1622,16 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
                     print(f"[PROC #{process_id} SUCCESS] ({current}/{FREE_LIMIT} Free Msgs Used)")
                 else:
                     print(f"[PROC #{process_id} PRO SUCCESS] Clean message dispatched without watermark!")
+            elif res.status_code == 429:
+                # Add handling for 429 rate limit
+                try:
+                    error_data = res.json()
+                    retry_after = error_data.get('retry_after', 1)
+                except Exception:
+                    retry_after = 1
+                
+                print(f"[PROC #{process_id} RATE LIMITED] Sleeping for {retry_after}s")
+                time.sleep(retry_after)
             else:
                 print(f"[PROC #{process_id} ERROR {res.status_code}] {res.text}")
         except Exception as e:
@@ -1595,8 +1668,8 @@ def start_bot():
     
     try:
         interval_sec = int(data.get('interval', 60))
-        if interval_sec < 5:
-            interval_sec = 5
+        if interval_sec < 10:
+            interval_sec = 10
     except ValueError:
         interval_sec = 60
 
@@ -1627,7 +1700,6 @@ def start_bot():
     # Stop process if already running on this tab
     if process_id in active_sessions:
         active_sessions[process_id]["is_running"] = False
-        time.sleep(1)
 
     active_sessions[process_id] = {"is_running": True}
 
