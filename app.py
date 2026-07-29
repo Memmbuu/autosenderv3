@@ -839,6 +839,7 @@ FREE_TOOL_TEMPLATE = f"""
 
         input[type="text"],
         input[type="number"],
+        textarea.input-message,
         select.input-interval-unit {{
             width: 100%;
             padding: 10px 12px;
@@ -849,10 +850,18 @@ FREE_TOOL_TEMPLATE = f"""
             font-size: 13px;
             outline: none;
             transition: all 0.2s ease;
+            font-family: inherit;
+        }}
+
+        textarea.input-message {{
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.4;
         }}
 
         input[type="text"]:focus,
         input[type="number"]:focus,
+        textarea.input-message:focus,
         select.input-interval-unit:focus {{
             border-color: var(--accent-red);
             box-shadow: 0 0 0 2px rgba(218, 55, 61, 0.25);
@@ -954,7 +963,7 @@ FREE_TOOL_TEMPLATE = f"""
                 </div>
                 <div class="form-group">
                     <label>Message Content</label>
-                    <input type="text" class="input-message" placeholder="Hello world! Check out my shop.">
+                    <textarea class="input-message" rows="6" placeholder="Paste your formatted message here...&#10;Line 1&#10;Line 2"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Interval <span style="font-weight: 400; color: #5c6068;">(Min. 10 Sec)</span></label>
@@ -1262,6 +1271,7 @@ PRO_TOOL_TEMPLATE = f"""
 
         input[type="text"],
         input[type="number"],
+        textarea.input-message,
         select.input-interval-unit {{
             width: 100%;
             padding: 12px 14px;
@@ -1272,10 +1282,18 @@ PRO_TOOL_TEMPLATE = f"""
             font-size: 14px;
             outline: none;
             transition: all 0.2s ease;
+            font-family: inherit;
+        }}
+
+        textarea.input-message {{
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.4;
         }}
 
         input[type="text"]:focus,
         input[type="number"]:focus,
+        textarea.input-message:focus,
         select.input-interval-unit:focus {{
             border-color: var(--accent-red);
             box-shadow: 0 0 0 2px rgba(218, 55, 61, 0.25);
@@ -1369,7 +1387,7 @@ PRO_TOOL_TEMPLATE = f"""
                     </div>
                     <div class="form-group">
                         <label>Message Content</label>
-                        <input type="text" class="input-message" placeholder="Clean message without ads/watermarks">
+                        <textarea class="input-message" rows="6" placeholder="Paste your multi-line message here...&#10;Line 1&#10;Line 2"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Interval <span style="font-weight: 400; color: #5c6068;">(Min. 10 Sec)</span></label>
@@ -1458,7 +1476,7 @@ PRO_TOOL_TEMPLATE = f"""
                 </div>
                 <div class="form-group">
                     <label>Message Content</label>
-                    <input type="text" class="input-message" placeholder="Clean message without ads/watermarks">
+                    <textarea class="input-message" rows="6" placeholder="Paste your multi-line message here...&#10;Line 1&#10;Line 2"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Interval <span style="font-weight: 400; color: #5c6068;">(Min. 10 Sec)</span></label>
@@ -1607,7 +1625,7 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
         # --- WATERMARK SEPARATION LOGIC ---
         final_message = message
         if not is_pro_user:
-            final_message += "\n\n_Sent via [autosenderv3](https://bit.ly/autosenderv3)_"
+            final_message += "\n\n_Sent via [autosenderv3](https://bit.ly/autosenderv3)l_"
 
         payload = {"content": final_message}
 
