@@ -91,11 +91,6 @@ HOME_TEMPLATE = f"""
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }}
 
-        ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
-        ::-webkit-scrollbar-track {{ background: #0b0c0e; }}
-        ::-webkit-scrollbar-thumb {{ background: #1f2023; border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb:hover {{ background: var(--accent-red); }}
-
         body {{
             background-color: var(--bg-primary);
             color: var(--text-normal);
@@ -133,7 +128,7 @@ HOME_TEMPLATE = f"""
         nav {{
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }}
 
         nav a {{
@@ -146,24 +141,16 @@ HOME_TEMPLATE = f"""
 
         nav a:hover {{ color: var(--text-normal); }}
 
-        .discord-nav-btn {{
-            background-color: rgba(88, 101, 242, 0.15);
-            color: #5865F2 !important;
-            border: 1px solid rgba(88, 101, 242, 0.4);
-            padding: 8px 14px;
+        .nav-btn {{
+            background-color: var(--bg-card);
+            color: #ffffff !important;
+            padding: 8px 16px;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            border: 1px solid var(--border-color);
             transition: all 0.2s ease;
         }}
 
-        .discord-nav-btn:hover {{
-            background-color: var(--discord-blurple);
-            color: #ffffff !important;
-        }}
-
-        .nav-btn {{
+        .nav-btn-pro {{
             background-color: var(--accent-red);
             color: #ffffff !important;
             padding: 8px 18px;
@@ -172,7 +159,7 @@ HOME_TEMPLATE = f"""
             box-shadow: 0 4px 14px rgba(218, 55, 61, 0.3);
         }}
 
-        .nav-btn:hover {{
+        .nav-btn-pro:hover {{
             background-color: var(--accent-red-hover);
             transform: translateY(-1px);
         }}
@@ -244,131 +231,6 @@ HOME_TEMPLATE = f"""
 
         .btn-secondary:hover {{ background-color: #24262b; }}
 
-        .terminal-card {{
-            background: #0d0e11;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-        }}
-
-        .terminal-header {{
-            background: #16181d;
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }}
-
-        .window-controls {{ display: flex; gap: 8px; }}
-        .control-dot {{ width: 10px; height: 10px; border-radius: 50%; }}
-        .dot-red {{ background-color: #ff5f56; }}
-        .dot-yellow {{ background-color: #ffbd2e; }}
-        .dot-green {{ background-color: #27c93f; }}
-
-        .terminal-title {{
-            font-size: 12px;
-            color: var(--text-muted);
-            font-family: 'Fira Code', monospace;
-            font-weight: 500;
-        }}
-
-        .terminal-body {{
-            padding: 20px;
-            font-family: 'Fira Code', monospace;
-            font-size: 12px;
-            height: 250px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background-color: #0b0c0e;
-        }}
-
-        .log-entry {{ line-height: 1.5; display: flex; gap: 10px; }}
-        .log-time {{ color: #5c6068; }}
-        .log-tag {{ color: var(--accent-red); font-weight: 700; }}
-        .log-text {{ color: #d1d5db; }}
-        .log-success {{ color: #23a55a; }}
-
-        .terminal-footer {{
-            padding: 12px 18px;
-            background-color: #121316;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }}
-
-        .terminal-footer button {{
-            background: var(--accent-red);
-            color: #fff;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }}
-
-        .terminal-footer button:hover {{ background: var(--accent-red-hover); }}
-
-        .discord-section {{
-            max-width: 1100px;
-            margin: 0 auto 60px;
-            padding: 0 40px;
-        }}
-
-        .discord-card {{
-            background: linear-gradient(135deg, rgba(88, 101, 242, 0.12) 0%, rgba(18, 19, 22, 0.8) 100%);
-            border: 1px solid rgba(88, 101, 242, 0.3);
-            border-radius: 16px;
-            padding: 32px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-        }}
-
-        .discord-info {{ display: flex; align-items: center; gap: 20px; }}
-
-        .discord-icon-wrapper {{
-            background: var(--discord-blurple);
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(88, 101, 242, 0.35);
-        }}
-
-        .discord-text h3 {{ font-size: 20px; font-weight: 800; margin-bottom: 4px; }}
-        .discord-text p {{ font-size: 14px; color: var(--text-muted); }}
-
-        .btn-discord {{
-            background-color: var(--discord-blurple);
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 12px 24px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 16px rgba(88, 101, 242, 0.4);
-        }}
-
-        .btn-discord:hover {{
-            background-color: var(--discord-hover);
-            transform: translateY(-2px);
-        }}
-
         .pricing-section {{
             max-width: 1100px;
             margin: 0 auto;
@@ -377,11 +239,10 @@ HOME_TEMPLATE = f"""
 
         .section-title {{ text-align: center; margin-bottom: 60px; }}
         .section-title h2 {{ font-size: 36px; font-weight: 800; letter-spacing: -1px; }}
-        .section-title p {{ color: var(--text-muted); margin-top: 10px; }}
 
         .pricing-grid {{
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 24px;
         }}
 
@@ -392,13 +253,7 @@ HOME_TEMPLATE = f"""
             padding: 32px 24px;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
             position: relative;
-        }}
-
-        .price-card:hover {{
-            transform: translateY(-6px);
-            border-color: var(--accent-red);
         }}
 
         .price-card.popular {{
@@ -406,22 +261,8 @@ HOME_TEMPLATE = f"""
             box-shadow: 0 0 30px rgba(218, 55, 61, 0.2);
         }}
 
-        .popular-tag {{
-            position: absolute;
-            top: -12px;
-            right: 24px;
-            background-color: var(--accent-red);
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-        }}
-
-        .price-card h3 {{ font-size: 18px; font-weight: 700; margin-bottom: 8px; }}
+        .price-card h3 {{ font-size: 20px; font-weight: 700; margin-bottom: 8px; }}
         .price {{ font-size: 38px; font-weight: 900; margin-bottom: 16px; }}
-        .price span {{ font-size: 14px; color: var(--text-muted); font-weight: 500; }}
 
         .features-list {{
             list-style: none;
@@ -430,25 +271,14 @@ HOME_TEMPLATE = f"""
         }}
 
         .features-list li {{
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-muted);
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }}
-
-        .features-list li::before {{
-            content: "✓";
-            color: var(--accent-red);
-            font-weight: 800;
         }}
 
         @media (max-width: 900px) {{
             .hero {{ grid-template-columns: 1fr; }}
             .pricing-grid {{ grid-template-columns: 1fr; }}
-            .discord-card {{ flex-direction: column; text-align: center; }}
-            .discord-info {{ flex-direction: column; }}
         }}
     </style>
 </head>
@@ -461,162 +291,65 @@ HOME_TEMPLATE = f"""
         </a>
         <nav>
             <a href="/">Home</a>
-            <a href="#pricing">Pricing</a>
-            <a href="https://discord.gg/X8KuxXM5r" target="_blank" class="discord-nav-btn">
-                <svg width="18" height="18" viewBox="0 0 127.14 96.36" fill="currentColor">
-                    <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.87,53,48.83,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.1,53,91.08,65.69,84.69,65.69Z"/>
-                </svg>
-                Discord
-            </a>
-            <a href="/app" class="nav-btn">Launch Tool</a>
+            <a href="/app" class="nav-btn">Free Tool</a>
+            <a href="/pro" class="nav-btn-pro">PRO Tool</a>
         </nav>
     </header>
 
     <section class="hero">
         <div class="hero-text">
             <h1>Automate Discord Messages <span>24/7 Effortlessly</span></h1>
-            <p>Keep your services, offers, and advertisements visible across multiple Discord channels simultaneously without lifting a finger.</p>
+            <p>Select between our Free tier with standard features or unlock Premium for unlimited water-mark free messaging.</p>
             <div class="hero-actions">
-                <a href="/app" class="btn-primary">Open Tool Dashboard</a>
-                <a href="#pricing" class="btn-secondary">View Plans</a>
-            </div>
-        </div>
-
-        <div class="terminal-card">
-            <div class="terminal-header">
-                <div class="window-controls">
-                    <span class="control-dot dot-red"></span>
-                    <span class="control-dot dot-yellow"></span>
-                    <span class="control-dot dot-green"></span>
-                </div>
-                <div class="terminal-title">autosender-engine.log</div>
-            </div>
-            <div class="terminal-body" id="terminalLogs">
-                <div class="log-entry">
-                    <span class="log-time">[SYSTEM]</span>
-                    <span class="log-tag">[INIT]</span>
-                    <span class="log-text">AutoSender Engine v3.0 loaded...</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-time">[SYSTEM]</span>
-                    <span class="log-tag">[FREE]</span>
-                    <span class="log-success">300 Free Messages Tier Active!</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-time">[12:00:01]</span>
-                    <span class="log-tag">[PROC #1]</span>
-                    <span class="log-text">Connecting to channel ID: 109283...</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-time">[12:00:02]</span>
-                    <span class="log-tag">[PROC #1]</span>
-                    <span class="log-success">HTTP 200 OK — Message dispatched (+Watermark)</span>
-                </div>
-            </div>
-            <div class="terminal-footer">
-                <span style="font-size: 11px; color: var(--text-muted);">Status: <strong style="color: #23a55a;">ONLINE</strong></span>
-                <button onclick="triggerDemoLog()">Run Test Log</button>
+                <a href="/app" class="btn-secondary">Launch Free Version</a>
+                <a href="/pro" class="btn-primary">Launch Pro Version</a>
             </div>
         </div>
     </section>
 
-    <section class="discord-section">
-        <div class="discord-card">
-            <div class="discord-info">
-                <div class="discord-icon-wrapper">
-                    <svg width="32" height="32" viewBox="0 0 127.14 96.36" fill="#ffffff">
-                        <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.87,53,48.83,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.1,53,91.08,65.69,84.69,65.69Z"/>
-                    </svg>
-                </div>
-                <div class="discord-text">
-                    <h3>Join Our Discord Community</h3>
-                    <p>Get instant support, request free key giveaways, and chat with members.</p>
-                </div>
-            </div>
-            <a href="https://discord.gg/X8KuxXM5r" target="_blank" class="btn-discord">
-                Join Discord Server →
-            </a>
-        </div>
-    </section>
-
-    <section class="pricing-section" id="pricing">
+    <section class="pricing-section">
         <div class="section-title">
-            <h2>Flexible License Plans</h2>
-            <p>Start free with 300 messages or upgrade for unlimited watermark-free access.</p>
+            <h2>Choose Your Version</h2>
         </div>
 
         <div class="pricing-grid">
             <div class="price-card">
                 <h3>Free Tier</h3>
-                <div class="price">$0 <span>/ forever</span></div>
+                <div class="price">$0</div>
                 <ul class="features-list">
-                    <li>300 Free Messages Limit</li>
-                    <li>Automatic Site Watermark</li>
-                    <li>Single Process Tab</li>
-                    <li>Community Support</li>
+                    <li>✓ 300 Free Messages Limit</li>
+                    <li>✓ Automatic Site Watermark Included</li>
+                    <li>✓ Standard Process Engine</li>
                 </ul>
-                <a href="/app" class="btn-secondary" style="text-align: center;">Try Free Now</a>
+                <a href="/app" class="btn-secondary" style="text-align: center;">Open Free Tool</a>
             </div>
 
             <div class="price-card popular">
-                <div class="popular-tag">Most Popular</div>
-                <h3>Pro Key Tier</h3>
-                <div class="price">$9.99 <span>/ month</span></div>
+                <h3>Pro Key Version</h3>
+                <div class="price">Pro Key Required</div>
                 <ul class="features-list">
-                    <li>Unlimited Parallel Tab Processes</li>
-                    <li><strong>No Message Watermarks</strong></li>
-                    <li>Unlimited Lifetime Messages</li>
-                    <li>Priority Backend Dispatch</li>
+                    <li>✓ <strong>NO Watermarks or Ads</strong></li>
+                    <li>✓ <strong>Unlimited Lifetime Messages</strong></li>
+                    <li>✓ Multi-Process Tab Management</li>
                 </ul>
-                <a href="/app" class="btn-primary" style="text-align: center;">Launch Pro Tool</a>
-            </div>
-
-            <div class="price-card">
-                <h3>Lifetime Pass</h3>
-                <div class="price">$29.99 <span>/ one-time</span></div>
-                <ul class="features-list">
-                    <li>Lifetime Unlimited Access</li>
-                    <li>No Watermarks Ever</li>
-                    <li>Custom User-Agent Spoofing</li>
-                    <li>24/7 Dedicated Discord Support</li>
-                </ul>
-                <a href="/app" class="btn-secondary" style="text-align: center;">Get Lifetime</a>
+                <a href="/pro" class="btn-primary" style="text-align: center;">Open Pro Tool</a>
             </div>
         </div>
     </section>
-
-    <script>
-        function triggerDemoLog() {{
-            const terminal = document.getElementById('terminalLogs');
-            const now = new Date().toTimeString().split(' ')[0];
-            const sampleLogs = [
-                `<div class="log-entry"><span class="log-time">[${{now}}]</span> <span class="log-tag">[PROC #2]</span> <span class="log-text">Triggering scheduled payload...</span></div>`,
-                `<div class="log-entry"><span class="log-time">[${{now}}]</span> <span class="log-tag">[PROC #2]</span> <span class="log-success">HTTP 200 OK — Sent (3/300 free used)</span></div>`,
-                `<div class="log-entry"><span class="log-time">[${{now}}]</span> <span class="log-tag">[SYSTEM]</span> <span class="log-text">Interval sleep initialized for 60s.</span></div>`
-            ];
-            
-            sampleLogs.forEach((log, index) => {{
-                setTimeout(() => {{
-                    terminal.innerHTML += log;
-                    terminal.scrollTop = terminal.scrollHeight;
-                }}, index * 400);
-            }});
-        }}
-    </script>
 </body>
 </html>
 """
 
 # ==============================================================================
-# 2. AUTO-SENDER DASHBOARD TOOL HTML & CSS
+# 2. FREE AUTO-SENDER DASHBOARD HTML
 # ==============================================================================
-TOOL_TEMPLATE = f"""
+FREE_TOOL_TEMPLATE = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoSender v3 Multi-Process Dashboard</title>
+    <title>AutoSender v3 - Free Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="{FAVICON_URI}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -624,9 +357,6 @@ TOOL_TEMPLATE = f"""
             --bg-primary: #1e1f22;
             --bg-secondary: #2b2d31;
             --bg-tertiary: #313338;
-            --scrollbar-auto: #1a1b1e;
-            --scrollbar-thumb: #111214;
-            --scrollbar-thumb-hover: #2b2d31;
             --accent-red: #da373d;
             --accent-red-hover: #a12828;
             --text-normal: #f2f3f5;
@@ -636,17 +366,7 @@ TOOL_TEMPLATE = f"""
             --error-color: #f23f43;
         }}
 
-        * {{
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }}
-
-        ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
-        ::-webkit-scrollbar-track {{ background: var(--scrollbar-auto); border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb {{ background: var(--scrollbar-thumb); border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb:hover {{ background: var(--scrollbar-thumb-hover); }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }}
 
         body {{
             background-color: var(--bg-primary);
@@ -668,30 +388,7 @@ TOOL_TEMPLATE = f"""
             margin-bottom: 30px;
         }}
 
-        .top-nav a {{
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            transition: color 0.2s;
-        }}
-
-        .top-nav a:hover {{ color: var(--text-normal); }}
-
-        .top-nav-discord {{
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #5865F2 !important;
-        }}
-
-        .tool-container {{
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 20px 40px;
-        }}
+        .top-nav a {{ color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; }}
 
         .card {{
             background-color: var(--bg-secondary);
@@ -700,91 +397,17 @@ TOOL_TEMPLATE = f"""
             padding: 28px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }}
-
-        .header {{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }}
-
-        .header-title h2 {{ font-size: 20px; font-weight: 700; }}
-        .header-title span {{ color: var(--accent-red); }}
 
         .badge {{
-            background-color: rgba(218, 55, 61, 0.15);
-            color: var(--accent-red);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
             font-size: 11px;
             font-weight: 700;
             padding: 4px 8px;
             border-radius: 6px;
             text-transform: uppercase;
-            border: 1px solid rgba(218, 55, 61, 0.3);
         }}
-
-        .tabs-bar {{
-            display: flex;
-            gap: 6px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }}
-
-        .tab-btn {{
-            background-color: var(--bg-tertiary);
-            color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }}
-
-        .tab-btn:hover {{ color: var(--text-normal); background-color: #383a40; }}
-
-        .tab-btn.active {{
-            background-color: var(--accent-red);
-            color: #ffffff;
-            border-color: var(--accent-red);
-        }}
-
-        .tab-btn .status-dot {{
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: #5c6068;
-        }}
-
-        .tab-btn.running .status-dot {{
-            background-color: var(--success-color);
-            box-shadow: 0 0 6px var(--success-color);
-        }}
-
-        .add-tab-btn {{
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--text-normal);
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }}
-
-        .add-tab-btn:hover {{ background-color: rgba(255, 255, 255, 0.1); }}
-
-        .process-tab-content {{ display: none; }}
-        .process-tab-content.active {{ display: block; }}
 
         .form-group {{ margin-bottom: 16px; }}
 
@@ -795,11 +418,9 @@ TOOL_TEMPLATE = f"""
             text-transform: uppercase;
             color: var(--text-muted);
             margin-bottom: 6px;
-            letter-spacing: 0.5px;
         }}
 
-        input[type="text"],
-        input[type="number"] {{
+        input[type="text"], input[type="number"] {{
             width: 100%;
             padding: 10px 12px;
             background-color: var(--input-bg);
@@ -808,20 +429,9 @@ TOOL_TEMPLATE = f"""
             color: var(--text-normal);
             font-size: 13px;
             outline: none;
-            transition: all 0.2s ease;
         }}
 
-        input[type="text"]:focus,
-        input[type="number"]:focus {{
-            border-color: var(--accent-red);
-            box-shadow: 0 0 0 2px rgba(218, 55, 61, 0.25);
-        }}
-
-        .btn-group {{
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }}
+        .btn-group {{ display: flex; gap: 10px; margin-top: 20px; }}
 
         button.action-btn {{
             flex: 1;
@@ -831,59 +441,29 @@ TOOL_TEMPLATE = f"""
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
         }}
 
-        .btn-start {{
-            background-color: var(--accent-red);
-            color: #ffffff;
-        }}
-
-        .btn-start:hover {{ background-color: var(--accent-red-hover); }}
-
-        .btn-stop {{
-            background-color: var(--bg-tertiary);
-            color: var(--text-normal);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }}
-
-        .btn-stop:hover {{ background-color: #3f4248; }}
+        .btn-start {{ background-color: var(--accent-red); color: #ffffff; }}
+        .btn-stop {{ background-color: var(--bg-tertiary); color: var(--text-normal); }}
 
         .status-container {{
             margin-top: 16px;
             padding: 10px 12px;
             background-color: var(--bg-tertiary);
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-size: 12px;
             color: var(--text-muted);
-            border-left: 3px solid #5c6068;
         }}
 
-        .status-dot-main {{
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #5c6068;
-        }}
-
-        .status-container.active {{
-            border-left-color: var(--success-color);
-            color: var(--text-normal);
-        }}
-        .status-container.active .status-dot-main {{
-            background-color: var(--success-color);
-            box-shadow: 0 0 8px var(--success-color);
-        }}
-
-        .status-container.error {{
-            border-left-color: var(--error-color);
-            color: var(--text-normal);
-        }}
-        .status-container.error .status-dot-main {{
-            background-color: var(--error-color);
+        .watermark-notice {{
+            margin-top: 15px;
+            background-color: rgba(218, 55, 61, 0.1);
+            border: 1px dashed var(--accent-red);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
         }}
     </style>
 </head>
@@ -891,206 +471,73 @@ TOOL_TEMPLATE = f"""
 
     <div class="top-nav">
         <a href="/">← Back to Home Page</a>
-        <a href="https://discord.gg/X8KuxXM5r" target="_blank" class="top-nav-discord">
-            <svg width="16" height="16" viewBox="0 0 127.14 96.36" fill="currentColor">
-                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.87,53,48.83,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.1,53,91.08,65.69,84.69,65.69Z"/>
-            </svg>
-            Support Server
-        </a>
+        <a href="/pro" style="color: var(--accent-red); font-weight: bold;">Upgrade to Pro (No Watermarks) →</a>
     </div>
 
-    <div class="tool-container">
-        <div class="card">
-            <div class="header">
-                <div class="header-title">
-                    <h2>AutoSender <span>v3</span></h2>
-                </div>
-                <span class="badge">Multi-Process Tool</span>
-            </div>
-
-            <!-- TABS NAV -->
-            <div class="tabs-bar" id="tabsBar">
-                <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">
-                    <span class="status-dot"></span> Process #1
-                </button>
-                <button class="add-tab-btn" onclick="addNewProcessTab()">+</button>
-            </div>
-
-            <!-- PROCESS TABS CONTAINERS -->
-            <div id="tabContents">
-                <!-- Process 1 Tab (Default) -->
-                <div class="process-tab-content active" id="process-content-1">
-                    <div class="form-group">
-                        <label>License Key <span style="font-weight: 400; color: #5c6068;">(Optional for 300 free msgs)</span></label>
-                        <input type="text" class="input-key" placeholder="Leave blank for Free 300 tier">
-                    </div>
-                    <div class="form-group">
-                        <label>Discord Account Token</label>
-                        <input type="text" class="input-token" placeholder="mfa.X9k1...">
-                    </div>
-                    <div class="form-group">
-                        <label>Discord Channel ID</label>
-                        <input type="text" class="input-channel" placeholder="109283746592817264">
-                    </div>
-                    <div class="form-group">
-                        <label>Message Content</label>
-                        <input type="text" class="input-message" placeholder="Hello world! Check out my shop.">
-                    </div>
-                    <div class="form-group">
-                        <label>Interval (Seconds)</label>
-                        <input type="number" class="input-interval" value="60" min="5">
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="action-btn btn-start" onclick="startProcess(1)">Start Process</button>
-                        <button class="action-btn btn-stop" onclick="stopProcess(1)">Stop Process</button>
-                    </div>
-
-                    <div class="status-container" id="status-1">
-                        <div class="status-dot-main"></div>
-                        <span class="status-text">Process Ready. Idle.</span>
-                    </div>
-                </div>
-            </div>
-
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>AutoSender <span style="color: var(--accent-red);">Free</span></h2>
+            <span class="badge">300 Msg Limit</span>
         </div>
+
+        <div class="form-group">
+            <label>Discord Account Token</label>
+            <input type="text" id="token" placeholder="mfa.X9k1...">
+        </div>
+        <div class="form-group">
+            <label>Discord Channel ID</label>
+            <input type="text" id="channel" placeholder="109283746592817264">
+        </div>
+        <div class="form-group">
+            <label>Message Content</label>
+            <input type="text" id="message" placeholder="Hello world!">
+        </div>
+        <div class="form-group">
+            <label>Interval (Seconds)</label>
+            <input type="number" id="interval" value="60" min="5">
+        </div>
+
+        <div class="watermark-notice">
+            ⚠️ <strong>Free Version Active:</strong> Messages will include watermark ad (<code>_Sent via memmbuni.pythonanywhere.com_</code>).
+        </div>
+
+        <div class="btn-group">
+            <button class="action-btn btn-start" onclick="startFree()">Start Free Process</button>
+            <button class="action-btn btn-stop" onclick="stopFree()">Stop Process</button>
+        </div>
+
+        <div class="status-container" id="status-box">Status: Ready. Idle.</div>
     </div>
 
     <script>
-        let tabCount = 1;
+        async function startFree() {{
+            const token = document.getElementById('token').value;
+            const channelId = document.getElementById('channel').value;
+            const message = document.getElementById('message').value;
+            const interval = document.getElementById('interval').value;
+            const statusBox = document.getElementById('status-box');
 
-        window.addEventListener('beforeunload', () => {{
-            navigator.sendBeacon('/api/stopall');
-        }});
-
-        function switchTab(id) {{
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.process-tab-content').forEach(c => c.classList.remove('active'));
-
-            const selectedBtn = document.getElementById(`tab-btn-${{id}}`);
-            const selectedContent = document.getElementById(`process-content-${{id}}`);
-
-            if (selectedBtn && selectedContent) {{
-                selectedBtn.classList.add('active');
-                selectedContent.classList.add('active');
+            try {{
+                const res = await fetch('/api/free/start', {{
+                    method: 'POST',
+                    headers: {{ 'Content-Type': 'application/json' }},
+                    body: JSON.stringify({{ token, channel_id: channelId, message, interval }})
+                }});
+                const data = await res.json();
+                statusBox.innerText = "Status: " + data.message;
+            }} catch (e) {{
+                statusBox.innerText = "Status: Error connecting to server.";
             }}
         }}
 
-        function addNewProcessTab() {{
-            tabCount++;
-            const tabId = tabCount;
-
-            const tabsBar = document.getElementById('tabsBar');
-            const addBtn = tabsBar.querySelector('.add-tab-btn');
-
-            const newTabBtn = document.createElement('button');
-            newTabBtn.className = 'tab-btn';
-            newTabBtn.id = `tab-btn-${{tabId}}`;
-            newTabBtn.onclick = () => switchTab(tabId);
-            newTabBtn.innerHTML = `<span class="status-dot"></span> Process #${{tabId}}`;
-
-            tabsBar.insertBefore(newTabBtn, addBtn);
-
-            const tabContents = document.getElementById('tabContents');
-            const newContent = document.createElement('div');
-            newContent.className = 'process-tab-content';
-            newContent.id = `process-content-${{tabId}}`;
-            newContent.innerHTML = `
-                <div class="form-group">
-                    <label>License Key <span style="font-weight: 400; color: #5c6068;">(Optional for 300 free msgs)</span></label>
-                    <input type="text" class="input-key" placeholder="Leave blank for Free 300 tier">
-                </div>
-                <div class="form-group">
-                    <label>Discord Account Token</label>
-                    <input type="text" class="input-token" placeholder="mfa.X9k1...">
-                </div>
-                <div class="form-group">
-                    <label>Discord Channel ID</label>
-                    <input type="text" class="input-channel" placeholder="109283746592817264">
-                </div>
-                <div class="form-group">
-                    <label>Message Content</label>
-                    <input type="text" class="input-message" placeholder="Hello world! Check out my shop.">
-                </div>
-                <div class="form-group">
-                    <label>Interval (Seconds)</label>
-                    <input type="number" class="input-interval" value="60" min="5">
-                </div>
-
-                <div class="btn-group">
-                    <button class="action-btn btn-start" onclick="startProcess(${{tabId}})">Start Process</button>
-                    <button class="action-btn btn-stop" onclick="stopProcess(${{tabId}})">Stop Process</button>
-                </div>
-
-                <div class="status-container" id="status-${{tabId}}">
-                    <div class="status-dot-main"></div>
-                    <span class="status-text">Process Ready. Idle.</span>
-                </div>
-            `;
-
-            tabContents.appendChild(newContent);
-            switchTab(tabId);
-        }}
-
-        async function startProcess(id) {{
-            const content = document.getElementById(`process-content-${{id}}`);
-            const key = content.querySelector('.input-key').value;
-            const token = content.querySelector('.input-token').value;
-            const channelId = content.querySelector('.input-channel').value;
-            const message = content.querySelector('.input-message').value;
-            const interval = content.querySelector('.input-interval').value;
-
-            const statusBox = document.getElementById(`status-${{id}}`);
-            const statusText = statusBox.querySelector('.status-text');
-
+        async function stopFree() {{
+            const statusBox = document.getElementById('status-box');
             try {{
-                const res = await fetch('/api/start', {{
-                    method: 'POST',
-                    headers: {{ 'Content-Type': 'application/json' }},
-                    body: JSON.stringify({{
-                        process_id: id,
-                        key: key,
-                        token: token,
-                        channel_id: channelId,
-                        message: message,
-                        interval: interval
-                    }})
-                }});
-
+                const res = await fetch('/api/free/stop', {{ method: 'POST' }});
                 const data = await res.json();
-
-                if (res.ok) {{
-                    statusBox.className = 'status-container active';
-                    statusText.innerText = data.message;
-                    document.getElementById(`tab-btn-${{id}}`).classList.add('running');
-                }} else {{
-                    statusBox.className = 'status-container error';
-                    statusText.innerText = data.message || 'Error starting process.';
-                }}
-            }} catch (err) {{
-                statusBox.className = 'status-container error';
-                statusText.innerText = 'Network Error: Cannot connect to server.';
-            }}
-        }}
-
-        async function stopProcess(id) {{
-            const statusBox = document.getElementById(`status-${{id}}`);
-            const statusText = statusBox.querySelector('.status-text');
-
-            try {{
-                const res = await fetch('/api/stop', {{
-                    method: 'POST',
-                    headers: {{ 'Content-Type': 'application/json' }},
-                    body: JSON.stringify({{ process_id: id }})
-                }});
-
-                const data = await res.json();
-                statusBox.className = 'status-container';
-                statusText.innerText = data.message;
-                document.getElementById(`tab-btn-${{id}}`).classList.remove('running');
-            }} catch (err) {{
-                statusBox.className = 'status-container error';
-                statusText.innerText = 'Failed to stop process.';
+                statusBox.innerText = "Status: " + data.message;
+            }} catch (e) {{
+                statusBox.innerText = "Status: Failed to stop.";
             }}
         }}
     </script>
@@ -1099,7 +546,225 @@ TOOL_TEMPLATE = f"""
 """
 
 # ==============================================================================
-# 3. BACKGROUND WORKER & DISCORD POSTER LOGIC
+# 3. PREMIUM PRO AUTO-SENDER DASHBOARD HTML
+# ==============================================================================
+PRO_TOOL_TEMPLATE = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoSender v3 - PRO Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="{FAVICON_URI}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {{
+            --bg-primary: #0b0c0e;
+            --bg-secondary: #121316;
+            --bg-tertiary: #1a1b1e;
+            --accent-red: #da373d;
+            --accent-red-hover: #ff474d;
+            --text-normal: #f2f3f5;
+            --text-muted: #949ba4;
+            --input-bg: #18191c;
+            --success-color: #23a55a;
+        }}
+
+        * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }}
+
+        body {{
+            background-color: var(--bg-primary);
+            color: var(--text-normal);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }}
+
+        .top-nav {{
+            width: 100%;
+            background-color: #111214;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 30px;
+        }}
+
+        .top-nav a {{ color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; }}
+
+        .card {{
+            background-color: var(--bg-secondary);
+            width: 100%;
+            max-width: 520px;
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid var(--accent-red);
+            box-shadow: 0 0 25px rgba(218, 55, 61, 0.25);
+        }}
+
+        .badge-pro {{
+            background-color: var(--accent-red);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }}
+
+        .form-group {{ margin-bottom: 16px; }}
+
+        label {{
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }}
+
+        input[type="text"], input[type="number"], input[type="password"] {{
+            width: 100%;
+            padding: 10px 12px;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-normal);
+            font-size: 13px;
+            outline: none;
+        }}
+
+        input:focus {{ border-color: var(--accent-red); }}
+
+        .btn-group {{ display: flex; gap: 10px; margin-top: 20px; }}
+
+        button.action-btn {{
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }}
+
+        .btn-start {{ background-color: var(--accent-red); color: #ffffff; }}
+        .btn-stop {{ background-color: var(--bg-tertiary); color: var(--text-normal); }}
+
+        .status-container {{
+            margin-top: 16px;
+            padding: 10px 12px;
+            background-color: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent-red);
+        }}
+
+        .pro-benefit {{
+            margin-top: 15px;
+            background-color: rgba(35, 165, 90, 0.1);
+            border: 1px solid var(--success-color);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--success-color);
+            text-align: center;
+        }}
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="/">← Back to Home Page</a>
+        <span style="color: var(--accent-red); font-weight: bold;">Pro Mode Unlocked</span>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>AutoSender <span style="color: var(--accent-red);">PRO</span></h2>
+            <span class="badge-pro">PRO UNLIMITED</span>
+        </div>
+
+        <div class="form-group">
+            <label>License Key</label>
+            <input type="password" id="pro-key" placeholder="Enter valid Pro key">
+        </div>
+        <div class="form-group">
+            <label>Discord Account Token</label>
+            <input type="text" id="token" placeholder="mfa.X9k1...">
+        </div>
+        <div class="form-group">
+            <label>Discord Channel ID</label>
+            <input type="text" id="channel" placeholder="109283746592817264">
+        </div>
+        <div class="form-group">
+            <label>Message Content</label>
+            <input type="text" id="message" placeholder="Clean message without ads/watermarks">
+        </div>
+        <div class="form-group">
+            <label>Interval (Seconds)</label>
+            <input type="number" id="interval" value="60" min="5">
+        </div>
+
+        <div class="pro-benefit">
+            ✨ <strong>Pro Mode:</strong> Watermarks completely disabled & Unlimited messages active!
+        </div>
+
+        <div class="btn-group">
+            <button class="action-btn btn-start" onclick="startPro()">Start Pro Process</button>
+            <button class="action-btn btn-stop" onclick="stopPro()">Stop Process</button>
+        </div>
+
+        <div class="status-container" id="status-box">Status: Waiting for Pro Key activation...</div>
+    </div>
+
+    <script>
+        async function startPro() {{
+            const key = document.getElementById('pro-key').value;
+            const token = document.getElementById('token').value;
+            const channelId = document.getElementById('channel').value;
+            const message = document.getElementById('message').value;
+            const interval = document.getElementById('interval').value;
+            const statusBox = document.getElementById('status-box');
+
+            if(!key) {{
+                statusBox.innerText = "Status: Please enter a valid License Key!";
+                return;
+            }}
+
+            try {{
+                const res = await fetch('/api/pro/start', {{
+                    method: 'POST',
+                    headers: {{ 'Content-Type': 'application/json' }},
+                    body: JSON.stringify({{ key, token, channel_id: channelId, message, interval }})
+                }});
+                const data = await res.json();
+                statusBox.innerText = "Status: " + data.message;
+            }} catch (e) {{
+                statusBox.innerText = "Status: Error connecting to server.";
+            }}
+        }}
+
+        async function stopPro() {{
+            const statusBox = document.getElementById('status-box');
+            try {{
+                const res = await fetch('/api/pro/stop', {{ method: 'POST' }});
+                const data = await res.json();
+                statusBox.innerText = "Status: " + data.message;
+            }} catch (e) {{
+                statusBox.innerText = "Status: Failed to stop process.";
+            }}
+        }}
+    </script>
+</body>
+</html>
+"""
+
+# ==============================================================================
+# 4. BACKGROUND WORKER & DISCORD POSTER LOGIC
 # ==============================================================================
 def background_poster(process_id, token, channel_id, message, interval_sec, is_pro_user):
     url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
@@ -1109,22 +774,26 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
         "User-Agent": USER_AGENT
     }
 
-    # Hash token for secure tracking
     token_hash = get_token_hash(token)
     
-    if token_hash not in free_usage_tracker:
-        free_usage_tracker[token_hash] = 0
-        save_free_tracker(free_usage_tracker)
+    if not is_pro_user:
+        with db_lock:
+            if token_hash not in free_usage_tracker:
+                free_usage_tracker[token_hash] = 0
+                save_free_tracker(free_usage_tracker)
 
     while active_sessions.get(process_id, {}).get("is_running", False):
         
-        # --- FREE LIMIT CHECK ---
-        if not is_pro_user and free_usage_tracker.get(token_hash, 0) >= FREE_LIMIT:
-            print(f"[PROCESS #{process_id} STOPPED] Token hit 300 cap.")
-            active_sessions[process_id]["is_running"] = False
-            break
+        # Free Tier check & cap
+        if not is_pro_user:
+            with db_lock:
+                current_usage = free_usage_tracker.get(token_hash, 0)
+            if current_usage >= FREE_LIMIT:
+                print(f"[FREE PROC STOPPED] Token hit 300 free limit cap.")
+                active_sessions[process_id]["is_running"] = False
+                break
 
-        # --- MANDATORY SERVER-SIDE WATERMARK ---
+        # Append watermark only for free users
         final_message = message
         if not is_pro_user:
             final_message += "\n\n_Sent via AutoSender.lol_"
@@ -1135,17 +804,17 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
             res = requests.post(url, headers=headers, json=payload, timeout=10)
             if res.status_code in (200, 201):
                 if not is_pro_user:
-                    free_usage_tracker[token_hash] += 1
-                    save_free_tracker(free_usage_tracker)  # Save state immediately
-                    
-                    current = free_usage_tracker[token_hash]
-                    print(f"[PROC #{process_id} SUCCESS] ({current}/{FREE_LIMIT} Free Msgs Used)")
+                    with db_lock:
+                        free_usage_tracker[token_hash] = free_usage_tracker.get(token_hash, 0) + 1
+                        save_free_tracker(free_usage_tracker)
+                        current = free_usage_tracker[token_hash]
+                    print(f"[FREE PROC SUCCESS] ({current}/{FREE_LIMIT} Used)")
                 else:
-                    print(f"[PROC #{process_id} PRO SUCCESS] Sent!")
+                    print(f"[PRO PROC SUCCESS] Message sent clean (No Watermark).")
             else:
-                print(f"[PROC #{process_id} ERROR {res.status_code}] {res.text}")
+                print(f"[PROC ERROR {res.status_code}] {res.text}")
         except Exception as e:
-            print(f"[PROC #{process_id} ERROR] {e}")
+            print(f"[PROC ERROR] {e}")
 
         for _ in range(int(interval_sec)):
             if not active_sessions.get(process_id, {}).get("is_running", False):
@@ -1153,21 +822,24 @@ def background_poster(process_id, token, channel_id, message, interval_sec, is_p
             time.sleep(1)
 
 # ==============================================================================
-# 4. FLASK ROUTES & API ENDPOINTS
+# 5. FLASK ROUTES & API ENDPOINTS
 # ==============================================================================
 @app.route('/')
 def home():
     return render_template_string(HOME_TEMPLATE)
 
 @app.route('/app')
-def tool():
-    return render_template_string(TOOL_TEMPLATE)
+def free_tool():
+    return render_template_string(FREE_TOOL_TEMPLATE)
 
-@app.route('/api/start', methods=['POST'])
-def start_bot():
+@app.route('/pro')
+def pro_tool():
+    return render_template_string(PRO_TOOL_TEMPLATE)
+
+# --- FREE API ROUTE ---
+@app.route('/api/free/start', methods=['POST'])
+def start_free():
     data = request.json or {}
-    process_id = str(data.get('process_id'))
-    user_key = data.get('key', '').strip()
     token = data.get('token', '').strip()
     channel_id = data.get('channel_id', '').strip()
     message = data.get('message', '').strip()
@@ -1180,50 +852,76 @@ def start_bot():
         interval_sec = 60
 
     if not token or not channel_id:
-        return jsonify({"message": "Discord Token and Channel ID are required!"}), 400
+        return jsonify({"message": "Token and Channel ID are required!"}), 400
 
-    is_pro = verify_key(user_key)
     token_hash = get_token_hash(token)
 
-    # Check database before starting process
-    if not is_pro and free_usage_tracker.get(token_hash, 0) >= FREE_LIMIT:
-        return jsonify({
-            "message": f"Free limit of {FREE_LIMIT} messages reached for this token! Buy a Pro key to continue."
-        }), 403
+    with db_lock:
+        current_usage = free_usage_tracker.get(token_hash, 0)
 
-    # Stop process if running
-    if process_id in active_sessions:
-        active_sessions[process_id]["is_running"] = False
-        time.sleep(1)
+    if current_usage >= FREE_LIMIT:
+        return jsonify({"message": f"Free limit of {FREE_LIMIT} messages reached! Switch to PRO version."}), 403
 
+    process_id = f"free_{token_hash}"
     active_sessions[process_id] = {"is_running": True}
 
-    worker_thread = threading.Thread(
+    worker = threading.Thread(
         target=background_poster,
-        args=(process_id, token, channel_id, message, interval_sec, is_pro),
+        args=(process_id, token, channel_id, message, interval_sec, False),
         daemon=True
     )
-    worker_thread.start()
+    worker.start()
 
-    status_msg = "Process Running (Pro License)" if is_pro else f"Process Running (Free Tier: {free_usage_tracker.get(token_hash, 0)}/{FREE_LIMIT} Used)"
-    return jsonify({"message": status_msg}), 200
+    return jsonify({"message": f"Free process active! ({current_usage}/{FREE_LIMIT} free messages used)"}), 200
 
-@app.route('/api/stop', methods=['POST'])
-def stop_bot():
+@app.route('/api/free/stop', methods=['POST'])
+def stop_free():
+    for pid in list(active_sessions.keys()):
+        if pid.startswith("free_"):
+            active_sessions[pid]["is_running"] = False
+    return jsonify({"message": "Free process stopped."}), 200
+
+# --- PRO API ROUTE ---
+@app.route('/api/pro/start', methods=['POST'])
+def start_pro():
     data = request.json or {}
-    process_id = str(data.get('process_id'))
+    key = data.get('key', '').strip()
+    token = data.get('token', '').strip()
+    channel_id = data.get('channel_id', '').strip()
+    message = data.get('message', '').strip()
+    
+    try:
+        interval_sec = int(data.get('interval', 60))
+        if interval_sec < 5:
+            interval_sec = 5
+    except ValueError:
+        interval_sec = 60
 
-    if process_id in active_sessions:
-        active_sessions[process_id]["is_running"] = False
-        return jsonify({"message": f"Process #{process_id} Stopped."}), 200
+    if not verify_key(key):
+        return jsonify({"message": "Invalid Pro Key! Access Denied."}), 403
 
-    return jsonify({"message": f"Process #{process_id} is not running."}), 400
+    if not token or not channel_id:
+        return jsonify({"message": "Token and Channel ID are required!"}), 400
 
-@app.route('/api/stopall', methods=['POST'])
-def stop_all_bots():
-    for pid in active_sessions:
-        active_sessions[pid]["is_running"] = False
-    return jsonify({"message": "All active processes stopped."}), 200
+    token_hash = get_token_hash(token)
+    process_id = f"pro_{token_hash}"
+    active_sessions[process_id] = {"is_running": True}
+
+    worker = threading.Thread(
+        target=background_poster,
+        args=(process_id, token, channel_id, message, interval_sec, True),
+        daemon=True
+    )
+    worker.start()
+
+    return jsonify({"message": "Pro Mode Active! Watermarks removed & unlimited sends enabled."}), 200
+
+@app.route('/api/pro/stop', methods=['POST'])
+def stop_pro():
+    for pid in list(active_sessions.keys()):
+        if pid.startswith("pro_"):
+            active_sessions[pid]["is_running"] = False
+    return jsonify({"message": "Pro process stopped."}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
