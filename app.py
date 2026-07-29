@@ -895,7 +895,7 @@ TOOL_TEMPLATE = f"""
             <svg width="16" height="16" viewBox="0 0 127.14 96.36" fill="currentColor">
                 <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.87,53,48.83,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.1,53,91.08,65.69,84.69,65.69Z"/>
             </svg>
-            Support Server
+            Discord Support
         </a>
     </div>
 
@@ -903,191 +903,173 @@ TOOL_TEMPLATE = f"""
         <div class="card">
             <div class="header">
                 <div class="header-title">
-                    <h2>AutoSender <span>v3</span></h2>
+                    <h2>AutoSender <span>Dashboard</span></h2>
                 </div>
-                <span class="badge">Multi-Process Tool</span>
+                <span class="badge">v3 Multi-Proc</span>
             </div>
 
-            <!-- TABS NAV -->
             <div class="tabs-bar" id="tabsBar">
-                <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">
+                <button class="tab-btn active" onclick="switchTab(1)" id="tabBtn1">
                     <span class="status-dot"></span> Process #1
                 </button>
-                <button class="add-tab-btn" onclick="addNewProcessTab()">+</button>
+                <button class="add-tab-btn" onclick="addNewTab()">+</button>
             </div>
 
-            <!-- PROCESS TABS CONTAINERS -->
-            <div id="tabContents">
-                <!-- Process 1 Tab (Default) -->
-                <div class="process-tab-content active" id="process-content-1">
+            <div id="tabsContentContainer">
+                <div class="process-tab-content active" id="tabContent1">
                     <div class="form-group">
-                        <label>License Key <span style="font-weight: 400; color: #5c6068;">(Optional for 300 free msgs)</span></label>
-                        <input type="text" class="input-key" placeholder="Leave blank for Free 300 tier">
+                        <label>Discord User Token</label>
+                        <input type="text" id="token1" placeholder="Paste Discord token...">
                     </div>
                     <div class="form-group">
-                        <label>Discord Account Token</label>
-                        <input type="text" class="input-token" placeholder="mfa.X9k1...">
+                        <label>Target Channel ID</label>
+                        <input type="text" id="channel1" placeholder="e.g. 109283746591823746">
                     </div>
                     <div class="form-group">
-                        <label>Discord Channel ID</label>
-                        <input type="text" class="input-channel" placeholder="109283746592817264">
+                        <label>Payload Message</label>
+                        <input type="text" id="message1" placeholder="Message content...">
                     </div>
                     <div class="form-group">
-                        <label>Message Content</label>
-                        <input type="text" class="input-message" placeholder="Hello world! Check out my shop.">
+                        <label>Delay Interval (Seconds)</label>
+                        <input type="number" id="delay1" value="60" min="5">
                     </div>
                     <div class="form-group">
-                        <label>Interval (Seconds)</label>
-                        <input type="number" class="input-interval" value="60" min="5">
+                        <label>Pro License Key (Optional)</label>
+                        <input type="text" id="key1" placeholder="Leave blank for free tier...">
                     </div>
 
                     <div class="btn-group">
-                        <button class="action-btn btn-start" onclick="startProcess(1)">Start Process</button>
-                        <button class="action-btn btn-stop" onclick="stopProcess(1)">Stop Process</button>
+                        <button class="action-btn btn-start" onclick="startProcess(1)">Start Engine</button>
+                        <button class="action-btn btn-stop" onclick="stopProcess(1)">Stop Engine</button>
                     </div>
 
-                    <div class="status-container" id="status-1">
-                        <div class="status-dot-main"></div>
-                        <span class="status-text">Process Ready. Idle.</span>
+                    <div class="status-container" id="statusBox1">
+                        <span class="status-dot-main"></span>
+                        <span id="statusText1">Idle — Ready to launch</span>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        let tabCount = 1;
+        let tabCounter = 1;
 
-        function switchTab(id) {{
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        function switchTab(tabId) {{
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.process-tab-content').forEach(c => c.classList.remove('active'));
 
-            const selectedBtn = document.getElementById(`tab-btn-${{id}}`);
-            const selectedContent = document.getElementById(`process-content-${{id}}`);
-
-            if (selectedBtn && selectedContent) {{
-                selectedBtn.classList.add('active');
-                selectedContent.classList.add('active');
+            const btn = document.getElementById(`tabBtn${{tabId}}`);
+            const content = document.getElementById(`tabContent${{tabId}}`);
+            
+            if (btn && content) {{
+                btn.classList.add('active');
+                content.classList.add('active');
             }}
         }}
 
-        function addNewProcessTab() {{
-            tabCount++;
-            const tabId = tabCount;
-
+        function addNewTab() {{
+            tabCounter++;
+            const tabId = tabCounter;
+            
             const tabsBar = document.getElementById('tabsBar');
             const addBtn = tabsBar.querySelector('.add-tab-btn');
+            
+            const newBtn = document.createElement('button');
+            newBtn.className = 'tab-btn';
+            newBtn.id = `tabBtn${{tabId}}`;
+            newBtn.onclick = () => switchTab(tabId);
+            newBtn.innerHTML = `<span class="status-dot"></span> Process #${{tabId}}`;
+            
+            tabsBar.insertBefore(newBtn, addBtn);
 
-            const newTabBtn = document.createElement('button');
-            newTabBtn.className = 'tab-btn';
-            newTabBtn.id = `tab-btn-${{tabId}}`;
-            newTabBtn.onclick = () => switchTab(tabId);
-            newTabBtn.innerHTML = `<span class="status-dot"></span> Process #${{tabId}}`;
-
-            tabsBar.insertBefore(newTabBtn, addBtn);
-
-            const tabContents = document.getElementById('tabContents');
+            const contentContainer = document.getElementById('tabsContentContainer');
             const newContent = document.createElement('div');
             newContent.className = 'process-tab-content';
-            newContent.id = `process-content-${{tabId}}`;
+            newContent.id = `tabContent${{tabId}}`;
             newContent.innerHTML = `
                 <div class="form-group">
-                    <label>License Key <span style="font-weight: 400; color: #5c6068;">(Optional for 300 free msgs)</span></label>
-                    <input type="text" class="input-key" placeholder="Leave blank for Free 300 tier">
+                    <label>Discord User Token</label>
+                    <input type="text" id="token${{tabId}}" placeholder="Paste Discord token...">
                 </div>
                 <div class="form-group">
-                    <label>Discord Account Token</label>
-                    <input type="text" class="input-token" placeholder="mfa.X9k1...">
+                    <label>Target Channel ID</label>
+                    <input type="text" id="channel${{tabId}}" placeholder="e.g. 109283746591823746">
                 </div>
                 <div class="form-group">
-                    <label>Discord Channel ID</label>
-                    <input type="text" class="input-channel" placeholder="109283746592817264">
+                    <label>Payload Message</label>
+                    <input type="text" id="message${{tabId}}" placeholder="Message content...">
                 </div>
                 <div class="form-group">
-                    <label>Message Content</label>
-                    <input type="text" class="input-message" placeholder="Hello world! Check out my shop.">
+                    <label>Delay Interval (Seconds)</label>
+                    <input type="number" id="delay${{tabId}}" value="60" min="5">
                 </div>
                 <div class="form-group">
-                    <label>Interval (Seconds)</label>
-                    <input type="number" class="input-interval" value="60" min="5">
+                    <label>Pro License Key (Optional)</label>
+                    <input type="text" id="key${{tabId}}" placeholder="Leave blank for free tier...">
                 </div>
-
                 <div class="btn-group">
-                    <button class="action-btn btn-start" onclick="startProcess(${{tabId}})">Start Process</button>
-                    <button class="action-btn btn-stop" onclick="stopProcess(${{tabId}})">Stop Process</button>
+                    <button class="action-btn btn-start" onclick="startProcess(${{tabId}})">Start Engine</button>
+                    <button class="action-btn btn-stop" onclick="stopProcess(${{tabId}})">Stop Engine</button>
                 </div>
-
-                <div class="status-container" id="status-${{tabId}}">
-                    <div class="status-dot-main"></div>
-                    <span class="status-text">Process Ready. Idle.</span>
+                <div class="status-container" id="statusBox${{tabId}}">
+                    <span class="status-dot-main"></span>
+                    <span id="statusText${{tabId}}">Idle — Ready to launch</span>
                 </div>
             `;
-
-            tabContents.appendChild(newContent);
+            contentContainer.appendChild(newContent);
             switchTab(tabId);
         }}
 
-        async function startProcess(id) {{
-            const content = document.getElementById(`process-content-${{id}}`);
-            const key = content.querySelector('.input-key').value;
-            const token = content.querySelector('.input-token').value;
-            const channelId = content.querySelector('.input-channel').value;
-            const message = content.querySelector('.input-message').value;
-            const interval = content.querySelector('.input-interval').value;
+        async function startProcess(tabId) {{
+            const token = document.getElementById(`token${{tabId}}`).value;
+            const channel = document.getElementById(`channel${{tabId}}`).value;
+            const message = document.getElementById(`message${{tabId}}`).value;
+            const delay = document.getElementById(`delay${{tabId}}`).value;
+            const key = document.getElementById(`key${{tabId}}`).value;
 
-            const statusBox = document.getElementById(`status-${{id}}`);
-            const statusText = statusBox.querySelector('.status-text');
+            const statusBox = document.getElementById(`statusBox${{tabId}}`);
+            const statusText = document.getElementById(`statusText${{tabId}}`);
+            const tabBtn = document.getElementById(`tabBtn${{tabId}}`);
 
-            try {{
-                const res = await fetch('/api/start', {{
-                    method: 'POST',
-                    headers: {{ 'Content-Type': 'application/json' }},
-                    body: JSON.stringify({{
-                        process_id: id,
-                        key: key,
-                        token: token,
-                        channel_id: channelId,
-                        message: message,
-                        interval: interval
-                    }})
-                }});
+            if (!token || !channel || !message) {{
+                statusBox.className = "status-container error";
+                statusText.innerText = "Error: Fill in Token, Channel, and Message.";
+                return;
+            }}
 
-                const data = await res.json();
+            const res = await fetch('/api/start', {{
+                method: 'POST',
+                headers: {{ 'Content-Type': 'application/json' }},
+                body: JSON.stringify({{ process_id: tabId, token, channel, message, delay, key }})
+            }});
 
-                if (res.ok) {{
-                    statusBox.className = 'status-container active';
-                    statusText.innerText = data.message;
-                    document.getElementById(`tab-btn-${{id}}`).classList.add('running');
-                }} else {{
-                    statusBox.className = 'status-container error';
-                    statusText.innerText = data.message || 'Error starting process.';
-                }}
-            }} catch (err) {{
-                statusBox.className = 'status-container error';
-                statusText.innerText = 'Network Error: Cannot connect to server.';
+            const data = await res.json();
+            if (data.status === 'success') {{
+                statusBox.className = "status-container active";
+                statusText.innerText = data.message;
+                tabBtn.classList.add('running');
+            }} else {{
+                statusBox.className = "status-container error";
+                statusText.innerText = data.message;
             }}
         }}
 
-        async function stopProcess(id) {{
-            const statusBox = document.getElementById(`status-${{id}}`);
-            const statusText = statusBox.querySelector('.status-text');
+        async function stopProcess(tabId) {{
+            const statusBox = document.getElementById(`statusBox${{tabId}}`);
+            const statusText = document.getElementById(`statusText${{tabId}}`);
+            const tabBtn = document.getElementById(`tabBtn${{tabId}}`);
 
-            try {{
-                const res = await fetch('/api/stop', {{
-                    method: 'POST',
-                    headers: {{ 'Content-Type': 'application/json' }},
-                    body: JSON.stringify({{ process_id: id }})
-                }});
+            const res = await fetch('/api/stop', {{
+                method: 'POST',
+                headers: {{ 'Content-Type': 'application/json' }},
+                body: JSON.stringify({{ process_id: tabId }})
+            }});
 
-                const data = await res.json();
-                statusBox.className = 'status-container';
-                statusText.innerText = data.message;
-                document.getElementById(`tab-btn-${{id}}`).classList.remove('running');
-            }} catch (err) {{
-                statusBox.className = 'status-container error';
-                statusText.innerText = 'Failed to stop process.';
-            }}
+            const data = await res.json();
+            statusBox.className = "status-container";
+            statusText.innerText = data.message;
+            tabBtn.classList.remove('running');
         }}
     </script>
 </body>
@@ -1095,125 +1077,95 @@ TOOL_TEMPLATE = f"""
 """
 
 # ==============================================================================
-# 3. BACKGROUND WORKER & DISCORD POSTER LOGIC
+# 3. BACKGROUND WORKER & FLASK ROUTES
 # ==============================================================================
-def background_poster(process_id, token, channel_id, message, interval_sec, is_pro_user):
-    url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
-    headers = {
-        "Authorization": token.strip(),
-        "Content-Type": "application/json",
-        "User-Agent": USER_AGENT
-    }
-
-    # Hash token for secure tracking
+def worker_thread(session_id, token, channel, message, delay, key):
+    is_pro = verify_key(key)
     token_hash = get_token_hash(token)
     
-    if token_hash not in free_usage_tracker:
-        free_usage_tracker[token_hash] = 0
-        save_free_tracker(free_usage_tracker)
+    url = f"https://discord.com/api/v9/channels/{channel}/messages"
+    headers = {
+        "Authorization": token.strip(),
+        "User-Agent": USER_AGENT,
+        "Content-Type": "application/json"
+    }
 
-    while active_sessions.get(process_id, {}).get("is_running", False):
-        
-        # --- FREE LIMIT CHECK ---
-        if not is_pro_user and free_usage_tracker.get(token_hash, 0) >= FREE_LIMIT:
-            print(f"[PROCESS #{process_id} STOPPED] Token hit 300 cap.")
-            active_sessions[process_id]["is_running"] = False
-            break
+    watermark = "\n\n*(Sent via AutoSender v3 Free Tier)*"
 
-        # --- MANDATORY SERVER-SIDE WATERMARK ---
-        final_message = message
-        if not is_pro_user:
-            final_message += "\n\n_Sent via memmbuni.pythonanywhere.com_"
+    while active_sessions.get(session_id, {}).get("running", False):
+        if not is_pro:
+            current_used = free_usage_tracker.get(token_hash, 0)
+            if current_used >= FREE_LIMIT:
+                active_sessions[session_id]["running"] = False
+                active_sessions[session_id]["status"] = "Free limit reached (300 msgs). Upgrade to Pro!"
+                break
 
-        payload = {"content": final_message}
+        payload_content = message if is_pro else (message + watermark)
+        payload = {"content": payload_content}
 
         try:
             res = requests.post(url, headers=headers, json=payload, timeout=10)
-            if res.status_code in (200, 201):
-                if not is_pro_user:
-                    free_usage_tracker[token_hash] += 1
-                    save_free_tracker(free_usage_tracker)  # Save state immediately
-                    
-                    current = free_usage_tracker[token_hash]
-                    print(f"[PROC #{process_id} SUCCESS] ({current}/{FREE_LIMIT} Free Msgs Used)")
-                else:
-                    print(f"[PROC #{process_id} PRO SUCCESS] Sent!")
+            if res.status_code == 200:
+                if not is_pro:
+                    free_usage_tracker[token_hash] = free_usage_tracker.get(token_hash, 0) + 1
+                    save_free_tracker(free_usage_tracker)
+                active_sessions[session_id]["status"] = f"Running: Sent successfully. Tier: {'Pro' if is_pro else 'Free'}"
             else:
-                print(f"[PROC #{process_id} ERROR {res.status_code}] {res.text}")
+                active_sessions[session_id]["status"] = f"HTTP Error {res.status_code}: {res.text}"
         except Exception as e:
-            print(f"[PROC #{process_id} ERROR] {e}")
+            active_sessions[session_id]["status"] = f"Network Exception: {str(e)}"
 
-        for _ in range(int(interval_sec)):
-            if not active_sessions.get(process_id, {}).get("is_running", False):
-                break
-            time.sleep(1)
+        time.sleep(float(delay))
 
-# ==============================================================================
-# 4. FLASK ROUTES & API ENDPOINTS
-# ==============================================================================
-@app.route('/')
-def home():
+@app.route("/")
+def index():
     return render_template_string(HOME_TEMPLATE)
 
-@app.route('/app')
-def tool():
+@app.route("/app")
+def dashboard():
     return render_template_string(TOOL_TEMPLATE)
 
-@app.route('/api/start', methods=['POST'])
-def start_bot():
+@app.route("/api/start", methods=["POST"])
+def api_start():
     data = request.json or {}
-    process_id = str(data.get('process_id'))
-    user_key = data.get('key', '').strip()
-    token = data.get('token', '').strip()
-    channel_id = data.get('channel_id', '').strip()
-    message = data.get('message', '').strip()
-    
-    try:
-        interval_sec = int(data.get('interval', 60))
-        if interval_sec < 5:
-            interval_sec = 5
-    except ValueError:
-        interval_sec = 60
+    proc_id = data.get("process_id", 1)
+    session_id = f"proc_{proc_id}"
 
-    if not token or not channel_id:
-        return jsonify({"message": "Discord Token and Channel ID are required!"}), 400
+    if active_sessions.get(session_id, {}).get("running", False):
+        return jsonify({"status": "error", "message": f"Process #{proc_id} is already running."})
 
-    is_pro = verify_key(user_key)
-    token_hash = get_token_hash(token)
+    active_sessions[session_id] = {
+        "running": True,
+        "status": "Initializing process..."
+    }
 
-    # Check database before starting process
-    if not is_pro and free_usage_tracker.get(token_hash, 0) >= FREE_LIMIT:
-        return jsonify({
-            "message": f"Free limit of {FREE_LIMIT} messages reached for this token! Buy a Pro key to continue."
-        }), 403
-
-    # Stop process if running
-    if process_id in active_sessions:
-        active_sessions[process_id]["is_running"] = False
-        time.sleep(1)
-
-    active_sessions[process_id] = {"is_running": True}
-
-    worker_thread = threading.Thread(
-        target=background_poster,
-        args=(process_id, token, channel_id, message, interval_sec, is_pro),
+    t = threading.Thread(
+        target=worker_thread,
+        args=(
+            session_id,
+            data.get("token"),
+            data.get("channel"),
+            data.get("message"),
+            data.get("delay", 60),
+            data.get("key")
+        ),
         daemon=True
     )
-    worker_thread.start()
+    t.start()
 
-    status_msg = "Process Running (Pro License)" if is_pro else f"Process Running (Free Tier: {free_usage_tracker.get(token_hash, 0)}/{FREE_LIMIT} Used)"
-    return jsonify({"message": status_msg}), 200
+    return jsonify({"status": "success", "message": f"Process #{proc_id} launched successfully!"})
 
-@app.route('/api/stop', methods=['POST'])
-def stop_bot():
+@app.route("/api/stop", methods=["POST"])
+def api_stop():
     data = request.json or {}
-    process_id = str(data.get('process_id'))
+    proc_id = data.get("process_id", 1)
+    session_id = f"proc_{proc_id}"
 
-    if process_id in active_sessions:
-        active_sessions[process_id]["is_running"] = False
-        return jsonify({"message": f"Process #{process_id} Stopped."}), 200
+    if session_id in active_sessions:
+        active_sessions[session_id]["running"] = False
+        active_sessions[session_id]["status"] = "Stopped"
 
-    return jsonify({"message": f"Process #{process_id} is not running."}), 400
+    return jsonify({"status": "success", "message": f"Process #{proc_id} stopped."})
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
