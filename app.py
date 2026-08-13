@@ -317,7 +317,7 @@ HOME_TEMPLATE = """
                 <a class="nav-link" href="#features">Features</a>
                 <a class="nav-link" href="#pricing">Pricing</a>
                 <a class="nav-link" href="#rules">Setup</a>
-                <a class="nav-cta discord-cta" href="https://discord.gg/6feS4msabZ" target="_blank" rel="noopener">Join Discord</a>
+                <a class="nav-cta discord-cta" href="https://discord.gg/X8KuxXM5r" target="_blank" rel="noopener">Join Discord</a>
                 <a class="nav-cta" href="/pro">Get Pro</a>
             </nav>
         </div>
