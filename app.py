@@ -47,21 +47,6 @@ free_usage_tracker = load_free_tracker()
 active_sessions = {}
 
 
-# Browser-instance aware process keys. This prevents two browser tabs from
-# accidentally sharing Process #1 and stopping each other.
-def make_session_key(client_id, process_id):
-    client_id = str(client_id or "legacy").strip() or "legacy"
-    process_id = str(process_id or "1").strip() or "1"
-    return f"{client_id}:{process_id}"
-
-
-def stop_client_sessions(client_id):
-    prefix = f"{str(client_id or 'legacy').strip() or 'legacy'}:"
-    for session_key, session in list(active_sessions.items()):
-        if session_key.startswith(prefix):
-            session["is_running"] = False
-
-
 def get_free_usage(token_hash):
     """Return today's free usage for a token, resetting the counter on a new day."""
     today = datetime.now().date().isoformat()
@@ -1065,20 +1050,12 @@ FREE_TOOL_TEMPLATE = f"""
     </div>
 
     <script>
-        const AUTO_CLIENT_ID = (window.crypto && crypto.randomUUID)
-            ? crypto.randomUUID()
-            : ('c-' + Date.now() + '-' + Math.random().toString(36).slice(2));
-
         window.addEventListener('load', () => {{
             loadProcessConfig();
         }});
 
-        // Stop only processes owned by this dashboard's tab sessions on page close.
         window.addEventListener('beforeunload', () => {{
-            Object.values(TAB_DEVICE_IDS).forEach((deviceId) => {{
-                const body = new Blob([JSON.stringify({{ client_id: deviceId }})], {{ type: 'application/json' }});
-                navigator.sendBeacon('/api/stopall', body);
-            }});
+            navigator.sendBeacon('/api/stopall');
         }});
 
         function saveProcessConfig() {{
@@ -1149,7 +1126,6 @@ FREE_TOOL_TEMPLATE = f"""
                     headers: {{ 'Content-Type': 'application/json' }},
                     body: JSON.stringify({{
                         process_id: id,
-                        client_id: AUTO_CLIENT_ID,
                         key: '',
                         token: token,
                         channel_id: channelId,
@@ -1181,7 +1157,7 @@ FREE_TOOL_TEMPLATE = f"""
                 const res = await fetch('/api/stop', {{
                     method: 'POST',
                     headers: {{ 'Content-Type': 'application/json' }},
-                    body: JSON.stringify({{ process_id: id, client_id: makeTabDeviceId(id) }})
+                    body: JSON.stringify({{ process_id: id }})
                 }});
 
                 const data = await res.json();
@@ -1562,94 +1538,19 @@ PRO_TOOL_TEMPLATE = f"""
                     </div>
                 </div>
             </div>
-
-            <div class="pro-banner" style="border-color:#5865F2;color:#9aa4ff;background-color:rgba(88,101,242,.12);margin-top:18px;">
-                🧪 Security Research Lab: tests this app's session isolation locally. No Discord request is made.
-            </div>
-            <div class="btn-group">
-                <button class="action-btn btn-start" style="background:#5865F2;" onclick="runSecurityLab()">Run Session Isolation Test</button>
-            </div>
-            <div class="status-container" id="security-lab-status">
-                <div class="status-dot-main"></div>
-                <span class="status-text">Security lab idle.</span>
-            </div>
         </div>
     </div>
 
     <script>
         let tabCount = 1;
 
-        // Each Pro UI tab gets its own independent session/device identity.
-        // This is session isolation only, not hardware/device fingerprint spoofing.
-        const TAB_DEVICE_IDS = {{
-            1: (window.crypto && crypto.randomUUID)
-                ? crypto.randomUUID()
-                : ('p-' + Date.now() + '-' + Math.random().toString(36).slice(2))
-        }};
-
-        function makeTabDeviceId(id) {{
-            if (!TAB_DEVICE_IDS[id]) {{
-                TAB_DEVICE_IDS[id] = (window.crypto && crypto.randomUUID)
-                    ? crypto.randomUUID()
-                    : ('p-' + Date.now() + '-' + id + '-' + Math.random().toString(36).slice(2));
-            }}
-            return TAB_DEVICE_IDS[id];
-        }}
-
         window.addEventListener('load', () => {{
             loadProConfigs();
         }});
 
         window.addEventListener('beforeunload', () => {{
-            const body = new Blob([JSON.stringify({{ client_id: AUTO_CLIENT_ID }})], {{ type: 'application/json' }});
-            navigator.sendBeacon('/api/stopall', body);
+            navigator.sendBeacon('/api/stopall');
         }});
-
-        async function runSecurityLab() {{
-            const statusBox = document.getElementById('security-lab-status');
-            const statusText = statusBox.querySelector('.status-text');
-
-            const victimClient = makeTabDeviceId(1);
-            const attackerClient = (window.crypto && crypto.randomUUID)
-                ? crypto.randomUUID()
-                : ('lab-attacker-' + Date.now());
-
-            statusBox.className = 'status-container';
-            statusText.innerText = 'Running local session-isolation test...';
-
-            try {{
-                const res = await fetch('/api/security-lab/session-hijack', {{
-                    method: 'POST',
-                    headers: {{'Content-Type': 'application/json'}},
-                    body: JSON.stringify({{
-                        victim_client_id: victimClient,
-                        victim_process_id: '1',
-                        attacker_client_id: attackerClient
-                    }})
-                }});
-
-                const data = await res.json();
-
-                if (!res.ok) {{
-                    statusBox.className = 'status-container error';
-                    statusText.innerText = data.error || 'Security lab test failed.';
-                    return;
-                }}
-
-                if (data.vulnerability_demo) {{
-                    statusBox.className = 'status-container error';
-                    statusText.innerText =
-                        'LAB RESULT: session identity can be addressed by client-supplied identifiers. This is the finding to document and fix.';
-                }} else {{
-                    statusBox.className = 'status-container active';
-                    statusText.innerText =
-                        'LAB RESULT: session isolation held in this simulation.';
-                }}
-            }} catch (err) {{
-                statusBox.className = 'status-container error';
-                statusText.innerText = 'Security lab request failed.';
-            }}
-        }}
 
         function saveAllProConfigs() {{
             const configs = [];
@@ -1734,7 +1635,6 @@ PRO_TOOL_TEMPLATE = f"""
         function addNewProcessTab() {{
             tabCount++;
             const tabId = tabCount;
-            makeTabDeviceId(tabId);
 
             const tabsBar = document.getElementById('tabsBar');
             const addBtn = tabsBar.querySelector('.add-tab-btn');
@@ -1836,7 +1736,6 @@ PRO_TOOL_TEMPLATE = f"""
                     headers: {{ 'Content-Type': 'application/json' }},
                     body: JSON.stringify({{
                         process_id: id,
-                        client_id: makeTabDeviceId(id),
                         key: key,
                         token: token,
                         channel_id: channelId,
@@ -1870,7 +1769,7 @@ PRO_TOOL_TEMPLATE = f"""
                 const res = await fetch('/api/stop', {{
                     method: 'POST',
                     headers: {{ 'Content-Type': 'application/json' }},
-                    body: JSON.stringify({{ process_id: id, client_id: AUTO_CLIENT_ID }})
+                    body: JSON.stringify({{ process_id: id }})
                 }});
 
                 const data = await res.json();
@@ -1891,7 +1790,7 @@ PRO_TOOL_TEMPLATE = f"""
 # ==============================================================================
 # 3. BACKGROUND WORKER & DISCORD POSTER LOGIC
 # ==============================================================================
-def background_poster(session_key, process_id, token, channel_id, message, interval_sec, is_pro_user):
+def background_poster(process_id, token, channel_id, message, interval_sec, is_pro_user):
     url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
     headers = {
         "Authorization": token.strip(),
@@ -1904,14 +1803,14 @@ def background_poster(session_key, process_id, token, channel_id, message, inter
     # Initialize or migrate the usage record.
     get_free_usage(token_hash)
 
-    while active_sessions.get(session_key, {}).get("is_running", False):
+    while active_sessions.get(process_id, {}).get("is_running", False):
         
         # --- FREE LIMIT CHECK ---
         current_usage = get_free_usage(token_hash)
         
         if not is_pro_user and current_usage >= FREE_LIMIT:
             print(f"[PROCESS #{process_id} STOPPED] Token hit {FREE_LIMIT} daily limit cap.")
-            active_sessions[session_key]["is_running"] = False
+            active_sessions[process_id]["is_running"] = False
             break
 
         # Free-tier messages receive the promotional watermark; Pro messages stay untouched.
@@ -1946,7 +1845,7 @@ def background_poster(session_key, process_id, token, channel_id, message, inter
             print(f"[PROC #{process_id} ERROR] {e}")
 
         for _ in range(int(interval_sec)):
-            if not active_sessions.get(session_key, {}).get("is_running", False):
+            if not active_sessions.get(process_id, {}).get("is_running", False):
                 break
             time.sleep(1)
 
@@ -1965,57 +1864,10 @@ def tool():
 def pro_tool():
     return render_template_string(PRO_TOOL_TEMPLATE)
 
-@app.route('/api/security-lab/session-hijack', methods=['POST'])
-def security_lab_session_hijack():
-    """
-    LOCAL SECURITY RESEARCH LAB ONLY.
-    Simulates one browser client trying to stop another client's process.
-    It never contacts Discord and never sends a message.
-    """
-    data = request.get_json(silent=True) or {}
-    victim_client = str(data.get('victim_client_id', '')).strip()
-    victim_process = str(data.get('victim_process_id', '1')).strip() or '1'
-    attacker_client = str(data.get('attacker_client_id', '')).strip()
-
-    if not victim_client or not attacker_client:
-        return jsonify({"error": "Both victim_client_id and attacker_client_id are required."}), 400
-
-    victim_key = make_session_key(victim_client, victim_process)
-    attacker_key = make_session_key(attacker_client, victim_process)
-
-    # Create a harmless simulated victim session for the lab.
-    active_sessions[victim_key] = {
-        "is_running": True,
-        "client_id": victim_client,
-        "process_id": victim_process,
-        "lab": True,
-    }
-
-    # This mirrors the current ownership model of /api/stop:
-    # identity is taken from the request body and used as the session owner.
-    before = bool(active_sessions.get(victim_key, {}).get("is_running", False))
-
-    # Attacker tries to address the victim by reusing the victim's identifiers.
-    simulated_request_client = victim_client
-    simulated_request_key = make_session_key(simulated_request_client, victim_process)
-    can_address_victim = simulated_request_key == victim_key
-
-    return jsonify({
-        "lab": True,
-        "attacker_client_id": attacker_client,
-        "victim_client_id": victim_client,
-        "process_id": victim_process,
-        "vulnerability_demo": can_address_victim,
-        "victim_running_before": before,
-        "note": "This is a local session-ownership simulation. No Discord request is made."
-    }), 200
-
 @app.route('/api/start', methods=['POST'])
 def start_bot():
     data = request.json or {}
     process_id = str(data.get('process_id', '1'))
-    client_id = str(data.get('client_id', 'legacy')).strip() or 'legacy'
-    session_key = make_session_key(client_id, process_id)
     user_key = data.get('key', '').strip()
     token = data.get('token', '').strip()
     channel_id = data.get('channel_id', '').strip()
@@ -2051,15 +1903,15 @@ def start_bot():
             "message": f"Free limit of {FREE_LIMIT} messages reached for this token! Enter a valid Pro key to get unlimited access."
         }), 403
 
-    # Stop only the same browser client's previous run for this process tab.
-    if session_key in active_sessions:
-        active_sessions[session_key]["is_running"] = False
+    # Stop process if already running on this tab
+    if process_id in active_sessions:
+        active_sessions[process_id]["is_running"] = False
 
-    active_sessions[session_key] = {"is_running": True, "client_id": client_id, "process_id": process_id}
+    active_sessions[process_id] = {"is_running": True}
 
     worker_thread = threading.Thread(
         target=background_poster,
-        args=(session_key, process_id, token, channel_id, message, interval_sec, is_pro),
+        args=(process_id, token, channel_id, message, interval_sec, is_pro),
         daemon=True
     )
     worker_thread.start()
@@ -2071,21 +1923,18 @@ def start_bot():
 def stop_bot():
     data = request.json or {}
     process_id = str(data.get('process_id'))
-    client_id = str(data.get('client_id', 'legacy')).strip() or 'legacy'
-    session_key = make_session_key(client_id, process_id)
 
-    if session_key in active_sessions:
-        active_sessions[session_key]["is_running"] = False
+    if process_id in active_sessions:
+        active_sessions[process_id]["is_running"] = False
         return jsonify({"message": f"Process #{process_id} Stopped."}), 200
 
     return jsonify({"message": f"Process #{process_id} is not running."}), 400
 
 @app.route('/api/stopall', methods=['POST'])
 def stop_all_bots():
-    data = request.get_json(silent=True) or {}
-    client_id = str(data.get('client_id', 'legacy')).strip() or 'legacy'
-    stop_client_sessions(client_id)
-    return jsonify({"message": "All processes for this browser session stopped."}), 200
+    for pid in active_sessions:
+        active_sessions[pid]["is_running"] = False
+    return jsonify({"message": "All active processes stopped."}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
