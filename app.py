@@ -1581,11 +1581,11 @@ PRO_TOOL_TEMPLATE = f"""
 
         // Each Pro UI tab gets its own independent session/device identity.
         // This is session isolation only, not hardware/device fingerprint spoofing.
-        const TAB_DEVICE_IDS = {
+        const TAB_DEVICE_IDS = {{
             1: (window.crypto && crypto.randomUUID)
                 ? crypto.randomUUID()
                 : ('p-' + Date.now() + '-' + Math.random().toString(36).slice(2))
-        };
+        }};
 
         function makeTabDeviceId(id) {{
             if (!TAB_DEVICE_IDS[id]) {{
