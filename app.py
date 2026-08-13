@@ -1562,6 +1562,17 @@ PRO_TOOL_TEMPLATE = f"""
                     </div>
                 </div>
             </div>
+
+            <div class="pro-banner" style="border-color:#5865F2;color:#9aa4ff;background-color:rgba(88,101,242,.12);margin-top:18px;">
+                🧪 Security Research Lab: tests this app's session isolation locally. No Discord request is made.
+            </div>
+            <div class="btn-group">
+                <button class="action-btn btn-start" style="background:#5865F2;" onclick="runSecurityLab()">Run Session Isolation Test</button>
+            </div>
+            <div class="status-container" id="security-lab-status">
+                <div class="status-dot-main"></div>
+                <span class="status-text">Security lab idle.</span>
+            </div>
         </div>
     </div>
 
@@ -1593,6 +1604,52 @@ PRO_TOOL_TEMPLATE = f"""
             const body = new Blob([JSON.stringify({{ client_id: AUTO_CLIENT_ID }})], {{ type: 'application/json' }});
             navigator.sendBeacon('/api/stopall', body);
         }});
+
+        async function runSecurityLab() {{
+            const statusBox = document.getElementById('security-lab-status');
+            const statusText = statusBox.querySelector('.status-text');
+
+            const victimClient = makeTabDeviceId(1);
+            const attackerClient = (window.crypto && crypto.randomUUID)
+                ? crypto.randomUUID()
+                : ('lab-attacker-' + Date.now());
+
+            statusBox.className = 'status-container';
+            statusText.innerText = 'Running local session-isolation test...';
+
+            try {{
+                const res = await fetch('/api/security-lab/session-hijack', {{
+                    method: 'POST',
+                    headers: {{'Content-Type': 'application/json'}},
+                    body: JSON.stringify({{
+                        victim_client_id: victimClient,
+                        victim_process_id: '1',
+                        attacker_client_id: attackerClient
+                    }})
+                }});
+
+                const data = await res.json();
+
+                if (!res.ok) {{
+                    statusBox.className = 'status-container error';
+                    statusText.innerText = data.error || 'Security lab test failed.';
+                    return;
+                }}
+
+                if (data.vulnerability_demo) {{
+                    statusBox.className = 'status-container error';
+                    statusText.innerText =
+                        'LAB RESULT: session identity can be addressed by client-supplied identifiers. This is the finding to document and fix.';
+                }} else {{
+                    statusBox.className = 'status-container active';
+                    statusText.innerText =
+                        'LAB RESULT: session isolation held in this simulation.';
+                }}
+            }} catch (err) {{
+                statusBox.className = 'status-container error';
+                statusText.innerText = 'Security lab request failed.';
+            }}
+        }}
 
         function saveAllProConfigs() {{
             const configs = [];
@@ -1907,6 +1964,51 @@ def tool():
 @app.route('/pro')
 def pro_tool():
     return render_template_string(PRO_TOOL_TEMPLATE)
+
+@app.route('/api/security-lab/session-hijack', methods=['POST'])
+def security_lab_session_hijack():
+    """
+    LOCAL SECURITY RESEARCH LAB ONLY.
+    Simulates one browser client trying to stop another client's process.
+    It never contacts Discord and never sends a message.
+    """
+    data = request.get_json(silent=True) or {}
+    victim_client = str(data.get('victim_client_id', '')).strip()
+    victim_process = str(data.get('victim_process_id', '1')).strip() or '1'
+    attacker_client = str(data.get('attacker_client_id', '')).strip()
+
+    if not victim_client or not attacker_client:
+        return jsonify({"error": "Both victim_client_id and attacker_client_id are required."}), 400
+
+    victim_key = make_session_key(victim_client, victim_process)
+    attacker_key = make_session_key(attacker_client, victim_process)
+
+    # Create a harmless simulated victim session for the lab.
+    active_sessions[victim_key] = {
+        "is_running": True,
+        "client_id": victim_client,
+        "process_id": victim_process,
+        "lab": True,
+    }
+
+    # This mirrors the current ownership model of /api/stop:
+    # identity is taken from the request body and used as the session owner.
+    before = bool(active_sessions.get(victim_key, {}).get("is_running", False))
+
+    # Attacker tries to address the victim by reusing the victim's identifiers.
+    simulated_request_client = victim_client
+    simulated_request_key = make_session_key(simulated_request_client, victim_process)
+    can_address_victim = simulated_request_key == victim_key
+
+    return jsonify({
+        "lab": True,
+        "attacker_client_id": attacker_client,
+        "victim_client_id": victim_client,
+        "process_id": victim_process,
+        "vulnerability_demo": can_address_victim,
+        "victim_running_before": before,
+        "note": "This is a local session-ownership simulation. No Discord request is made."
+    }), 200
 
 @app.route('/api/start', methods=['POST'])
 def start_bot():
